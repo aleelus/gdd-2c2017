@@ -60,6 +60,8 @@ IF OBJECT_ID('[GRUPO6].Rubro') IS NOT NULL
 
 IF OBJECT_ID('[GRUPO6].Migracion_CLIENTE') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_CLIENTE
+IF OBJECT_ID('[GRUPO6].loginProc') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].loginProc
 
 --------------------------------------------------------------
 				--Drop Schema
@@ -238,6 +240,8 @@ CREATE TABLE [GRUPO6].RegistroPago(
 	CONSTRAINT importeRegistroPago_chk CHECK (importeRegistroPago>0)
 );
 GO
+
+
 --------------------------------------------------------------
 				--CREATE STORE PROCEDURE
 --------------------------------------------------------------
@@ -261,10 +265,9 @@ CREATE PROCEDURE [GRUPO6].Migracion_CLIENTE
 	END
 GO
 
-
 CREATE PROCEDURE [GRUPO6].loginProc
     @usu nvarchar(50), 
-    @password char(255)
+    @password char(43)
 AS 
 	DECLARE @id_usuario INT
 	
@@ -286,6 +289,7 @@ AS
 			UPDATE [GRUPO6].Usuario
 				SET intentosFallidosUsuario = 0
 				WHERE idUsuario = @id_usuario	
+			SELECT @id_usuario
 		END
 	ELSE
 		BEGIN	
@@ -307,7 +311,13 @@ AS
 GO
 
     
-   
+--------------------------------------------------------------
+				--INSERTO DATOS
+--------------------------------------------------------------
+INSERT INTO [GRUPO6].Usuario(loginUsuario,passwordUsuario,estadoUsuario)
+		VALUES ('admin','5rhwUL/LgUP8uNsBcKTcntANkE3dPipK0bHo3A/cm+c','Activo');
+-------------------------------------------------------------------------------------------		
+
  
   
     
