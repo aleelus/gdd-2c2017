@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PagoAgilFrba.BaseDeDatos.Cifrado;
+using PagoAgilFrba.BaseDeDatos.ConexionDB;
 
 namespace PagoAgilFrba.Login
 {
@@ -19,10 +21,21 @@ namespace PagoAgilFrba.Login
 
         private void buttonIngresar_Click(object sender, EventArgs e)
         {
-                
-            // ACA SE REALIZAN LAS VALIDACIONES DEL LOGIN Y EL HASHEO
-            new SeleccionarRol().Show(this);
-            this.Hide();
+
+            SQLParametros parametros = new SQLParametros();
+            parametros.add("@usu", textBoxUsuario.Text);
+            parametros.add("@password", Cifrado.Cifrar(textBoxContrasena.Text));
+
+            DataTable DTUsuario;
+
+            if (ConexionDB.Procedure("loginProc", parametros.get(), out DTUsuario))
+            {
+                Sesion.user_id = Convert.ToDecimal(DTUsuario.Rows[0][0]);                
+                Sesion.usuario = textBoxUsuario.Text;
+
+                new SeleccionarRol().Show(this);
+                this.Hide();
+            }
         }
     }
 }
