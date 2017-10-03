@@ -79,6 +79,7 @@
             this.buttonIngresar.TabIndex = 4;
             this.buttonIngresar.Text = "Ingresar";
             this.buttonIngresar.UseVisualStyleBackColor = true;
+            this.buttonIngresar.Click += new System.EventHandler(this.buttonIngresar_Click);
             // 
             // Login
             // 

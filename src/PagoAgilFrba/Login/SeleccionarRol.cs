@@ -10,19 +10,18 @@ using System.Windows.Forms;
 
 namespace PagoAgilFrba.Login
 {
-    public partial class Login : Form
+    public partial class SeleccionarRol : Form
     {
-        public Login()
+        public SeleccionarRol()
         {
             InitializeComponent();
         }
 
-        private void buttonIngresar_Click(object sender, EventArgs e)
+        private void buttonVolverALogin_Click(object sender, EventArgs e)
         {
-                
-            // ACA SE REALIZAN LAS VALIDACIONES DEL LOGIN Y EL HASHEO
-            new SeleccionarRol().Show(this);
-            this.Hide();
+            
+            Owner.Show();
+            this.Close();
         }
     }
 }
