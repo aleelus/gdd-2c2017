@@ -299,7 +299,7 @@ AS
 				BEGIN
 					RAISERROR ('Ha introducido su contrasena mal 3 veces, por lo que su cuenta se ha inhabilitado. Contacte a un administrador del sistema.',16,1)
 					UPDATE [GRUPO6].Usuario
-						SET estado = 'Inactivo'
+						SET estadoUsuario = 'Inactivo'
 						WHERE idUsuario = @id_usuario
 				END
 			RETURN
