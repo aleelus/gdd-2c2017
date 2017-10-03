@@ -261,6 +261,51 @@ CREATE PROCEDURE [GRUPO6].Migracion_CLIENTE
 	END
 GO
 
+
+CREATE PROCEDURE [GRUPO6].loginProc
+    @usu nvarchar(50), 
+    @password char(255)
+AS 
+	DECLARE @id_usuario INT
+	
+	SET @id_usuario = (SELECT idUsuario FROM [GRUPO6].Usuario WHERE loginUsuario = @usu)
+	IF @id_usuario IS NULL
+		BEGIN
+			RAISERROR ('No existe ese usuario',16,1)
+			RETURN
+		END
+		
+	IF (SELECT estadoUsuario FROM [GRUPO6].Usuario WHERE idUsuario = @id_usuario) = 'Inactivo'
+		BEGIN
+			RAISERROR ('Este usuario esta inhabilitado. Contacte a un administrador del sistema.',16,1)
+			RETURN
+		END
+	
+	IF (SELECT passwordUsuario FROM [GRUPO6].Usuario WHERE idUsuario = @id_usuario) = @password
+		BEGIN			
+			UPDATE [GRUPO6].Usuario
+				SET intentosFallidosUsuario = 0
+				WHERE idUsuario = @id_usuario	
+		END
+	ELSE
+		BEGIN	
+			UPDATE [GRUPO6].Usuario
+				SET intentosFallidosUsuario = intentosFallidosUsuario + 1
+				WHERE idUsuario = @id_usuario
+					
+			RAISERROR ('Contrasena incorrecta.',16,1)
+			
+			IF (SELECT intentosFallidosUsuario FROM [GRUPO6].Usuario WHERE idUsuario = @id_usuario) = 3
+				BEGIN
+					RAISERROR ('Ha introducido su contrasena mal 3 veces, por lo que su cuenta se ha inhabilitado. Contacte a un administrador del sistema.',16,1)
+					UPDATE [GRUPO6].Usuario
+						SET estado = 'Inactivo'
+						WHERE idUsuario = @id_usuario
+				END
+			RETURN
+		END
+GO
+
     
    
  
