@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.labelRol = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.comboBoxRoles = new System.Windows.Forms.ComboBox();
             this.buttonSeleccionar = new System.Windows.Forms.Button();
             this.buttonSalirRol = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -44,13 +44,13 @@
             this.labelRol.TabIndex = 0;
             this.labelRol.Text = "Rol:";
             // 
-            // comboBox1
+            // comboBoxRoles
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(51, 41);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(295, 21);
-            this.comboBox1.TabIndex = 1;
+            this.comboBoxRoles.FormattingEnabled = true;
+            this.comboBoxRoles.Location = new System.Drawing.Point(51, 41);
+            this.comboBoxRoles.Name = "comboBoxRoles";
+            this.comboBoxRoles.Size = new System.Drawing.Size(295, 21);
+            this.comboBoxRoles.TabIndex = 1;
             // 
             // buttonSeleccionar
             // 
@@ -61,6 +61,7 @@
             this.buttonSeleccionar.TabIndex = 5;
             this.buttonSeleccionar.Text = "Seleccionar";
             this.buttonSeleccionar.UseVisualStyleBackColor = true;
+            this.buttonSeleccionar.Click += new System.EventHandler(this.buttonSeleccionar_Click);
             // 
             // buttonSalirRol
             // 
@@ -81,9 +82,11 @@
             this.ClientSize = new System.Drawing.Size(379, 136);
             this.Controls.Add(this.buttonSalirRol);
             this.Controls.Add(this.buttonSeleccionar);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.comboBoxRoles);
             this.Controls.Add(this.labelRol);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "SeleccionarRol";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SeleccionarRol";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -93,7 +96,7 @@
         #endregion
 
         private System.Windows.Forms.Label labelRol;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox comboBoxRoles;
         private System.Windows.Forms.Button buttonSeleccionar;
         private System.Windows.Forms.Button buttonSalirRol;
     }

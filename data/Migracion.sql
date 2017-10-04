@@ -67,7 +67,7 @@ IF OBJECT_ID('[GRUPO6].loginProc') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].loginProc
 IF OBJECT_ID('[GRUPO6].obtenerRolesDeUsuario') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerRolesDeUsuario
-IF OBJECT_ID('[GRUPO6].ObtenerFuncionalidadesDeRol') IS NOT NULL
+IF OBJECT_ID('[GRUPO6].obtenerFuncionalidadesDeRol') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].ObtenerFuncionalidadesDeRol
 
 --------------------------------------------------------------
@@ -338,7 +338,7 @@ AS
 GO
     
 
-CREATE PROCEDURE [GRUPO6].ObtenerFuncionalidadesDeRol
+CREATE PROCEDURE [GRUPO6].obtenerFuncionalidadesDeRol
 @id_rol numeric(18,0)
 AS
 	BEGIN
