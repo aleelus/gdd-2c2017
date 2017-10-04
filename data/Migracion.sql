@@ -69,7 +69,12 @@ IF OBJECT_ID('[GRUPO6].obtenerRolesDeUsuario') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerRolesDeUsuario
 IF OBJECT_ID('[GRUPO6].obtenerFuncionalidadesDeRol') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].ObtenerFuncionalidadesDeRol
-
+IF OBJECT_ID('[GRUPO6].obtenerRoles') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerRoles
+IF OBJECT_ID('[GRUPO6].obtenerFuncionalidades') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerFuncionalidades
+IF OBJECT_ID('[GRUPO6].funcionesDelRol') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].funcionesDelRol
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -256,7 +261,6 @@ CREATE TABLE [GRUPO6].RegistroPago(
 );
 GO
 
-
 --------------------------------------------------------------
 				--CREATE STORE PROCEDURE
 --------------------------------------------------------------
@@ -348,11 +352,41 @@ AS
 			  r.idRol = @id_rol
 	END
 GO
+
+CREATE PROCEDURE [GRUPO6].obtenerRoles
+AS
+	BEGIN
+		SELECT *
+		FROM [GRUPO6].Rol
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].obtenerFuncionalidades
+AS
+	BEGIN
+		SELECT *
+		FROM [GRUPO6].Funcionalidad
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].funcionesDelRol
+	@nombre nvarchar(255)
+AS
+
+	SELECT Rol.nombreRol, Fun.nombreFuncionalidad, Fun.idFuncionalidad
+		FROM [GRUPO6].Funcionalidad Fun, [GRUPO6].Rol Rol, [GRUPO6].Rol_Funcionalidad Rel
+		WHERE Rel.idRol = Rol.idRol AND
+			Rel.idFuncionalidad = Fun.idFuncionalidad AND
+			Rol.idRol = @nombre
+GO
+
+
 --------------------------------------------------------------
 				--INSERTO DATOS
 --------------------------------------------------------------
 INSERT INTO [GRUPO6].Usuario(loginUsuario,passwordUsuario,estadoUsuario)
-		VALUES ('admin','5rhwUL/LgUP8uNsBcKTcntANkE3dPipK0bHo3A/cm+c','Activo');
+		VALUES ('admin','5rhwUL/LgUP8uNsBcKTcntANkE3dPipK0bHo3A/cm+c','Activo'),
+				('pepe','fJ58FJSyaEq3wZ1q/3N+Rg+p6Y1aI02hMQyX3fVpGDQ','Activo') -- Cobrador user:pepe password:pepe
 -------------------------------------------------------------------------------------------		
 INSERT INTO [GRUPO6].Funcionalidad(nombreFuncionalidad)
 		VALUES	('ABM Rol'),
@@ -362,7 +396,8 @@ INSERT INTO [GRUPO6].Funcionalidad(nombreFuncionalidad)
 				('ABM Sucursal'),
 				('ABM Facturas'),
 				('Registro de Pago de Facturas'),
-				('Rendicion de Facturas Cobradas'),				
+				('Rendicion de Facturas Cobradas'),
+				('Devoluciones'),			
 				('Listado Estadistico')
 -------------------------------------------------------------------------------------------	
 INSERT INTO [GRUPO6].Rol(nombreRol, estadoRol)
@@ -370,10 +405,11 @@ INSERT INTO [GRUPO6].Rol(nombreRol, estadoRol)
 				('Cobrador', 'Activo')
 -------------------------------------------------------------------------------------------	 
 INSERT INTO [GRUPO6].Rol_Usuario(idRol, idUsuario)
-		VALUES (1,1)		
+		VALUES (1,1),(2,2)		
 -------------------------------------------------------------------------------------------				
 INSERT INTO [GRUPO6].Rol_Funcionalidad(idRol, idFuncionalidad)
-		VALUES (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9)
+		VALUES (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9), (1,10),
+				(2,3), (2,4), (2,6), (2,7), (2,9)
     
       
       
