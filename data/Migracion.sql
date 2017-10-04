@@ -6,6 +6,9 @@ GO
 IF OBJECT_ID('[GRUPO6].Rol_Funcionalidad') IS NOT NULL
 	DROP TABLE [GRUPO6].Rol_Funcionalidad
 
+IF OBJECT_ID('[GRUPO6].Rol_Usuario') IS NOT NULL
+	DROP TABLE [GRUPO6].Rol_Usuario
+
 IF OBJECT_ID('[GRUPO6].Rol') IS NOT NULL
 	DROP TABLE [GRUPO6].Rol
 
@@ -62,6 +65,10 @@ IF OBJECT_ID('[GRUPO6].Migracion_CLIENTE') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_CLIENTE
 IF OBJECT_ID('[GRUPO6].loginProc') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].loginProc
+IF OBJECT_ID('[GRUPO6].obtenerRolesDeUsuario') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerRolesDeUsuario
+IF OBJECT_ID('[GRUPO6].ObtenerFuncionalidadesDeRol') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].ObtenerFuncionalidadesDeRol
 
 --------------------------------------------------------------
 				--Drop Schema
@@ -94,7 +101,8 @@ GO
 CREATE TABLE [GRUPO6].Rol_Funcionalidad(
 	idRol NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Rol(idRol),
 	idFuncionalidad NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Funcionalidad(idFuncionalidad)
-	CONSTRAINT rol_funcionalidad_id Primary KEY(idRol, idFuncionalidad)
+	CONSTRAINT rol_funcionalidad_id Primary KEY(idRol, idFuncionalidad),
+	
 );
 GO
 
@@ -106,6 +114,13 @@ CREATE TABLE [GRUPO6].Usuario(
 	estadoUsuario VARCHAR(10) NOT NULL DEFAULT 'Activo',
 	CONSTRAINT intentosFallidosUsuario_chk CHECK (intentosFallidosUsuario>=0 AND intentosFallidosUsuario<=3),
 	CONSTRAINT estadoUsuario_chk CHECK (estadoUsuario = 'Activo' or estadoUsuario = 'Inactivo')
+);
+GO
+
+CREATE TABLE [GRUPO6].Rol_Usuario(
+	idRol NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Rol(idRol),
+	idUsuario NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Usuario(idUsuario)
+	CONSTRAINT rol_usuario_id Primary KEY(idRol, idUsuario)
 );
 GO
 
@@ -310,16 +325,55 @@ AS
 		END
 GO
 
+CREATE PROCEDURE [GRUPO6].obtenerRolesDeUsuario
+@id_usuario numeric(18,0)
+AS
+	BEGIN
+		SELECT rolUsuario.idRol,nombreRol 
+		FROM [GRUPO6].Rol_Usuario rolUsuario,[GRUPO6].Rol rol
+		WHERE rolUsuario.idRol=rol.idRol  AND
+			  rol.estadoRol = 'Activo' AND 
+			  rolUsuario.idRol = @id_usuario
+	END
+GO
     
+
+CREATE PROCEDURE [GRUPO6].ObtenerFuncionalidadesDeRol
+@id_rol numeric(18,0)
+AS
+	BEGIN
+		SELECT r.idFuncionalidad,f.nombreFuncionalidad 
+		FROM [GRUPO6].Rol_Funcionalidad r, [GRUPO6].Funcionalidad f 
+		WHERE r.idFuncionalidad=f.idFuncionalidad AND 
+			  r.idRol = @id_rol
+	END
+GO
 --------------------------------------------------------------
 				--INSERTO DATOS
 --------------------------------------------------------------
 INSERT INTO [GRUPO6].Usuario(loginUsuario,passwordUsuario,estadoUsuario)
 		VALUES ('admin','5rhwUL/LgUP8uNsBcKTcntANkE3dPipK0bHo3A/cm+c','Activo');
 -------------------------------------------------------------------------------------------		
-
- 
-  
+INSERT INTO [GRUPO6].Funcionalidad(nombreFuncionalidad)
+		VALUES	('ABM Rol'),
+				('Registro de Usuario'),
+				('ABM Cliente'),
+				('ABM Empresa'),
+				('ABM Sucursal'),
+				('ABM Facturas'),
+				('Registro de Pago de Facturas'),
+				('Rendicion de Facturas Cobradas'),				
+				('Listado Estadistico')
+-------------------------------------------------------------------------------------------	
+INSERT INTO [GRUPO6].Rol(nombreRol, estadoRol)
+		VALUES	('Administrador', 'Activo'),
+				('Cobrador', 'Activo')
+-------------------------------------------------------------------------------------------	 
+INSERT INTO [GRUPO6].Rol_Usuario(idRol, idUsuario)
+		VALUES (1,1)		
+-------------------------------------------------------------------------------------------				
+INSERT INTO [GRUPO6].Rol_Funcionalidad(idRol, idFuncionalidad)
+		VALUES (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9)
     
       
       
