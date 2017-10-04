@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PagoAgilFrba.AbmRol
+namespace PagoAgilFrba.Devoluciones
 {
-    public partial class Form1 : Form
+    public partial class Devoluciones : Form
     {
-        public Form1()
+        public Devoluciones()
         {
             InitializeComponent();
         }

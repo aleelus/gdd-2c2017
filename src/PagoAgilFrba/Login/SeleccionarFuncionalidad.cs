@@ -37,20 +37,15 @@ namespace PagoAgilFrba.Login
                          
             dataGridViewFuncionalidades.AutoResizeColumns();
             dataGridViewFuncionalidades.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-          
-         
-           if (tam > 393)
-            {
-                dataGridViewFuncionalidades.Height = 393;
-                this.Height = 393 + 150;
-                buttonVolver.Top = 393 + 80;
-            }
-            else
-            {
-                dataGridViewFuncionalidades.Height = tam;
-                this.Height = tam + 150;
-                buttonVolver.Top = 70 + tam;
-            }
+                             
+            dataGridViewFuncionalidades.Height = tam;
+            this.Height = tam + 150;
+            buttonVolver.Top = tam + 55;
+            groupBoxFuncionalidad.Height =  tam + 85;
+            
+            
+
+            
         }
                 
 
@@ -80,7 +75,7 @@ namespace PagoAgilFrba.Login
             switch (dataGridViewFuncionalidades.CurrentCell.Value.ToString())
             {
                 case "ABM Rol":
-                    nuevoForm = new AbmRol.Form1();
+                    nuevoForm = new AbmRol.AdministrarRoles();
                     break;
                 case "Registro de Usuario":
                     nuevoForm = new Usuario.Form1();
@@ -102,7 +97,10 @@ namespace PagoAgilFrba.Login
                     break;
                 case "Rendicion de Facturas Cobradas":
                     nuevoForm = new AbmFactura.AbmFactura();
-                    break; 
+                    break;
+                case "Devoluciones":
+                    nuevoForm = new Devoluciones.Devoluciones();
+                    break;
                 case "Listado Estadistico":
                     nuevoForm = new ListadoEstadistico.Form1();
                     break;
@@ -119,6 +117,8 @@ namespace PagoAgilFrba.Login
                 Application.Exit();
             }
         }
+
+       
               
     }
 }

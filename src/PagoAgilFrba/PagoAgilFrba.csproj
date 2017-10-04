@@ -62,11 +62,11 @@
     <Compile Include="AbmFactura\AbmFactura.Designer.cs">
       <DependentUpon>AbmFactura.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmRol\Form1.cs">
+    <Compile Include="AbmRol\AdministrarRoles.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmRol\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="AbmRol\AdministrarRoles.Designer.cs">
+      <DependentUpon>AdministrarRoles.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmSucursal\Form1.cs">
       <SubType>Form</SubType>
@@ -76,6 +76,12 @@
     </Compile>
     <Compile Include="BaseDeDatos\Cifrado\Cifrado.cs" />
     <Compile Include="BaseDeDatos\ConexionDB\ConexionDB.cs" />
+    <Compile Include="Devoluciones\Devoluciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Devoluciones\Devoluciones.Designer.cs">
+      <DependentUpon>Devoluciones.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +135,9 @@
     </Compile>
     <EmbeddedResource Include="AbmFactura\AbmFactura.resx">
       <DependentUpon>AbmFactura.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmRol\AdministrarRoles.resx">
+      <DependentUpon>AdministrarRoles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
