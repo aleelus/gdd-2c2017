@@ -75,6 +75,10 @@ IF OBJECT_ID('[GRUPO6].obtenerFuncionalidades') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerFuncionalidades
 IF OBJECT_ID('[GRUPO6].funcionesDelRol') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].funcionesDelRol
+IF OBJECT_ID('[GRUPO6].agregarNuevoRol') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].agregarNuevoRol
+IF OBJECT_ID('[GRUPO6].asignarNuevasFuncAlRol') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].asignarNuevasFuncAlRol
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -381,6 +385,68 @@ AS
 			Rol.idRol = @nombre
 GO
 
+CREATE PROCEDURE [GRUPO6].agregarNuevoRol
+	@nombre nvarchar(255)
+AS
+BEGIN
+	DECLARE @existeRol nvarchar(255)
+	SET @existeRol = (SELECT nombreRol FROM [GRUPO6].Rol WHERE nombreRol = @nombre)
+	IF @existeRol IS NOT NULL
+		BEGIN
+			RAISERROR ('El nombre de rol ya existe, intente otro nombre',16,1)
+			RETURN
+		END
+	INSERT INTO [GRUPO6].Rol(nombreRol, estadoRol)
+		VALUES	(@nombre, 'Inactivo')
+END		
+GO
+
+CREATE PROCEDURE [GRUPO6].asignarNuevasFuncAlRol
+	@rol nvarchar(255),
+	@listaFuc nvarchar(255),
+	@estado char(10)
+AS
+	BEGIN
+		DELETE FROM [GRUPO6].Rol_Funcionalidad
+			   FROM [GRUPO6].Rol_Funcionalidad Rel
+				inner join [GRUPO6].Rol R
+				on R.nombreRol = @rol AND
+					R.idRol = Rel.idRol
+					
+		UPDATE [GRUPO6].Rol
+		SET estadoRol = @estado
+		FROM [GRUPO6].Rol
+			WHERE nombreRol = @rol
+		
+		DECLARE @strlist NVARCHAR(max), @pos INT, @delim CHAR, @lstr NVARCHAR(max)
+		SET @strlist = ISNULL(@listaFuc,'')
+		SET @delim = ','
+
+		WHILE ((len(@strlist) > 0) and (@strlist <> ''))
+			BEGIN
+				SET @pos = charindex(@delim, @strlist)
+        
+				IF @pos > 0
+					BEGIN
+						SET @lstr = substring(@strlist, 1, @pos-1)
+						SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000))
+					END
+				ELSE
+					BEGIN
+						SET @lstr = @strlist
+						SET @strlist = ''
+					END
+			
+			
+			INSERT INTO [GRUPO6].Rol_Funcionalidad(idRol,idFuncionalidad)
+				SELECT R.idRol, F.idFuncionalidad 
+					FROM [GRUPO6].Rol R, [GRUPO6].Funcionalidad F
+					WHERE R.nombreRol = @rol AND
+						  F.nombreFuncionalidad = @lstr
+			END
+        RETURN 
+    END
+GO
 
 --------------------------------------------------------------
 				--INSERTO DATOS
