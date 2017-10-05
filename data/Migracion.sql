@@ -280,7 +280,8 @@ CREATE PROCEDURE [GRUPO6].Migracion_CLIENTE
 					'Completar',[Cliente_Direccion],'Completar','Completar','Completar',[Cliente_Codigo_Postal] 
 			FROM [GD2C2017].[gd_esquema].[Maestra]
 			GROUP BY [Cliente-Dni],[Cliente-Nombre],[Cliente-Apellido],[Cliente-Fecha_Nac],Cliente_Mail
-					,[Cliente_Direccion],[Cliente_Codigo_Postal] 	
+					,[Cliente_Direccion],[Cliente_Codigo_Postal] 
+		UPDATE [GRUPO6].Cliente SET mailCliente=REPLACE(mailCliente, ' ', '')
 	END
 GO
 
