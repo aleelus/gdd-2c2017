@@ -14,6 +14,9 @@ namespace PagoAgilFrba.Login
 {
     public partial class SeleccionarRol : Form
     {
+
+        private bool salir = true;
+
         public SeleccionarRol()
         {
             InitializeComponent();
@@ -57,6 +60,14 @@ namespace PagoAgilFrba.Login
 
             new SeleccionarFuncionalidad().Show(this);
             this.Hide();
+        }
+
+        private void SeleccionarRol_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (salir)
+            {
+                Application.Exit();
+            }
         }
     }
 }

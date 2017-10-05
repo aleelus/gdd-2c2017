@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PagoAgilFrba.BaseDeDatos.ConexionDB;
 
+
 namespace PagoAgilFrba.AbmRol
 {
     public partial class AdministrarRoles : Form
@@ -60,7 +61,7 @@ namespace PagoAgilFrba.AbmRol
                     checkedListBoxFuncionalidades.Items.Add(row["nombreFuncionalidad"].ToString());
 
                 }
-                comboBoxSeleccionarRol.SelectedIndex = -1;
+                
             }
         }
 
@@ -71,7 +72,7 @@ namespace PagoAgilFrba.AbmRol
             resetear();
             try
             {
-                if (rowRol[0][2].ToString() == "Activo")
+                if (rowRol[0][2].ToString().Contains("Activo"))
                     checkBoxEstado.Checked = true;
                 else
                     checkBoxEstado.Checked = false;
@@ -115,6 +116,66 @@ namespace PagoAgilFrba.AbmRol
         private void checkedListBoxFuncionalidades_SelectedIndexChanged(object sender, EventArgs e)
         {
             buttonGuardar.Enabled = true;
+        }
+
+        private void buttonNuevoRol_Click(object sender, EventArgs e)
+        {
+            NuevoRol nvoRol = new NuevoRol();
+            nvoRol.ShowDialog(this);
+
+            resetear();
+
+            this.ActualizarRoles();
+        }
+
+        private void AdministrarRoles_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (salir)
+            {
+                Application.Exit();
+            }
+        }
+
+        private void buttonGuardar_Click(object sender, EventArgs e)
+        {
+
+            errorProvider1.Clear();
+
+            if (!Validaciones.ValidarLetrasGuiones(comboBoxSeleccionarRol.Text))
+            {
+                errorProvider1.SetError(comboBoxSeleccionarRol, "Elija un Rol");
+                return;
+            }
+
+            string funciones = "";
+            string estado = "Inactivo";
+
+            if (checkBoxEstado.Checked)
+                estado = "Activo";
+            else 
+                estado = "Inactivo";
+
+            buttonGuardar.Enabled = false;
+
+            foreach (Object itemChecked in checkedListBoxFuncionalidades.CheckedItems)
+            {
+                funciones = funciones + "," + itemChecked.ToString();
+
+            }
+
+            resetear();
+
+            SQLParametros parametros = new SQLParametros();
+
+            parametros.add("@rol", comboBoxSeleccionarRol.Text);
+            parametros.add("@listaFuc", funciones);
+            parametros.add("@estado", estado);
+
+            ConexionDB.Procedure("asignarNuevasFuncAlRol", parametros.get());
+
+
+            this.ActualizarRoles();
+
         }
    
     }

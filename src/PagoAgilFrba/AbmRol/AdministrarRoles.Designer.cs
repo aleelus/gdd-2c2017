@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.labelSeleccionarRol = new System.Windows.Forms.Label();
             this.comboBoxSeleccionarRol = new System.Windows.Forms.ComboBox();
             this.labelEstadoDelRol = new System.Windows.Forms.Label();
@@ -36,6 +37,8 @@
             this.buttonGuardar = new System.Windows.Forms.Button();
             this.buttonVolver = new System.Windows.Forms.Button();
             this.checkedListBoxFuncionalidades = new System.Windows.Forms.CheckedListBox();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // labelSeleccionarRol
@@ -86,6 +89,7 @@
             this.buttonNuevoRol.TabIndex = 6;
             this.buttonNuevoRol.Text = "Nuevo Rol";
             this.buttonNuevoRol.UseVisualStyleBackColor = true;
+            this.buttonNuevoRol.Click += new System.EventHandler(this.buttonNuevoRol_Click);
             // 
             // buttonGuardar
             // 
@@ -97,6 +101,7 @@
             this.buttonGuardar.TabIndex = 7;
             this.buttonGuardar.Text = "Guardar";
             this.buttonGuardar.UseVisualStyleBackColor = true;
+            this.buttonGuardar.Click += new System.EventHandler(this.buttonGuardar_Click);
             // 
             // buttonVolver
             // 
@@ -117,6 +122,10 @@
             this.checkedListBoxFuncionalidades.TabIndex = 9;
             this.checkedListBoxFuncionalidades.SelectedIndexChanged += new System.EventHandler(this.checkedListBoxFuncionalidades_SelectedIndexChanged);
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // AdministrarRoles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -135,7 +144,9 @@
             this.Name = "AdministrarRoles";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Administrar Roles";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AdministrarRoles_FormClosing);
             this.Load += new System.EventHandler(this.AdministrarRoles_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -151,5 +162,7 @@
         private System.Windows.Forms.Button buttonGuardar;
         private System.Windows.Forms.Button buttonVolver;
         private System.Windows.Forms.CheckedListBox checkedListBoxFuncionalidades;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
+        
     }
 }

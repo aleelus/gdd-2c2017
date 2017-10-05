@@ -88,6 +88,7 @@
             this.Name = "SeleccionarRol";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SeleccionarRol";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SeleccionarRol_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,5 +100,6 @@
         private System.Windows.Forms.ComboBox comboBoxRoles;
         private System.Windows.Forms.Button buttonSeleccionar;
         private System.Windows.Forms.Button buttonSalirRol;
+        
     }
 }

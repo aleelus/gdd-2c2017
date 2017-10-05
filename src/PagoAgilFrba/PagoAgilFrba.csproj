@@ -68,6 +68,12 @@
     <Compile Include="AbmRol\AdministrarRoles.Designer.cs">
       <DependentUpon>AdministrarRoles.cs</DependentUpon>
     </Compile>
+    <Compile Include="AbmRol\NuevoRol.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AbmRol\NuevoRol.Designer.cs">
+      <DependentUpon>NuevoRol.cs</DependentUpon>
+    </Compile>
     <Compile Include="AbmSucursal\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,11 +139,15 @@
     <Compile Include="Usuario\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Validaciones.cs" />
     <EmbeddedResource Include="AbmFactura\AbmFactura.resx">
       <DependentUpon>AbmFactura.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmRol\AdministrarRoles.resx">
       <DependentUpon>AdministrarRoles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmRol\NuevoRol.resx">
+      <DependentUpon>NuevoRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Login\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>

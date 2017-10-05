@@ -75,6 +75,34 @@ namespace PagoAgilFrba.BaseDeDatos.ConexionDB
             return dt;
         }
 
+
+        public static bool Procedure(string nombreProcedure, List<SqlParameter> parametros)
+        {
+            try
+            {
+                SqlCommand comandoSQL = new SqlCommand("[GRUPO6]." + nombreProcedure, Sesion.conexion);
+                comandoSQL.CommandType = CommandType.StoredProcedure;
+
+                if (parametros != null && parametros.Exists(x => x != null))
+                {
+                    foreach (SqlParameter parametro in parametros)
+                    {
+                        comandoSQL.Parameters.Add(parametro);
+                    }
+                }
+
+                SqlDataReader dr = comandoSQL.ExecuteReader();
+                dr.Close();
+
+                return true;
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return false;
+        }  
+
     }
 
     public class SQLParametros
