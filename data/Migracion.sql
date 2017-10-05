@@ -403,6 +403,8 @@ GO
 
 CREATE PROCEDURE [GRUPO6].asignarNuevasFuncAlRol
 	@rol nvarchar(255),
+	@rolNombreNuevo nvarchar(255),
+	@id_rol numeric(18,0),
 	@listaFuc nvarchar(255),
 	@estado char(10)
 AS
@@ -414,9 +416,9 @@ AS
 					R.idRol = Rel.idRol
 					
 		UPDATE [GRUPO6].Rol
-		SET estadoRol = @estado
+		SET estadoRol = @estado, nombreRol = @rolNombreNuevo
 		FROM [GRUPO6].Rol
-			WHERE nombreRol = @rol
+			WHERE idRol = @id_rol
 		
 		DECLARE @strlist NVARCHAR(max), @pos INT, @delim CHAR, @lstr NVARCHAR(max)
 		SET @strlist = ISNULL(@listaFuc,'')

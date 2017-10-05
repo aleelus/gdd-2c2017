@@ -38,6 +38,8 @@
             this.buttonVolver = new System.Windows.Forms.Button();
             this.checkedListBoxFuncionalidades = new System.Windows.Forms.CheckedListBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.textBoxCambiarNombreRol = new System.Windows.Forms.TextBox();
+            this.buttonCambiarNombre = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -95,7 +97,7 @@
             // 
             this.buttonGuardar.Enabled = false;
             this.buttonGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonGuardar.Location = new System.Drawing.Point(15, 131);
+            this.buttonGuardar.Location = new System.Drawing.Point(15, 175);
             this.buttonGuardar.Name = "buttonGuardar";
             this.buttonGuardar.Size = new System.Drawing.Size(97, 29);
             this.buttonGuardar.TabIndex = 7;
@@ -126,12 +128,35 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
+            // textBoxCambiarNombreRol
+            // 
+            this.textBoxCambiarNombreRol.Location = new System.Drawing.Point(221, 53);
+            this.textBoxCambiarNombreRol.Name = "textBoxCambiarNombreRol";
+            this.textBoxCambiarNombreRol.Size = new System.Drawing.Size(148, 20);
+            this.textBoxCambiarNombreRol.TabIndex = 10;
+            this.textBoxCambiarNombreRol.Visible = false;
+            this.textBoxCambiarNombreRol.TextChanged += new System.EventHandler(this.textBoxCambiarNombreRol_TextChanged);
+            // 
+            // buttonCambiarNombre
+            // 
+            this.buttonCambiarNombre.Enabled = false;
+            this.buttonCambiarNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCambiarNombre.Location = new System.Drawing.Point(15, 131);
+            this.buttonCambiarNombre.Name = "buttonCambiarNombre";
+            this.buttonCambiarNombre.Size = new System.Drawing.Size(97, 38);
+            this.buttonCambiarNombre.TabIndex = 11;
+            this.buttonCambiarNombre.Text = "Cambiar nombre";
+            this.buttonCambiarNombre.UseVisualStyleBackColor = true;
+            this.buttonCambiarNombre.Click += new System.EventHandler(this.buttonCambiarNombre_Click);
+            // 
             // AdministrarRoles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.CadetBlue;
             this.ClientSize = new System.Drawing.Size(391, 262);
+            this.Controls.Add(this.buttonCambiarNombre);
+            this.Controls.Add(this.textBoxCambiarNombreRol);
             this.Controls.Add(this.checkedListBoxFuncionalidades);
             this.Controls.Add(this.buttonVolver);
             this.Controls.Add(this.buttonGuardar);
@@ -163,6 +188,8 @@
         private System.Windows.Forms.Button buttonVolver;
         private System.Windows.Forms.CheckedListBox checkedListBoxFuncionalidades;
         private System.Windows.Forms.ErrorProvider errorProvider1;
+        private System.Windows.Forms.TextBox textBoxCambiarNombreRol;
+        private System.Windows.Forms.Button buttonCambiarNombre;
         
     }
 }

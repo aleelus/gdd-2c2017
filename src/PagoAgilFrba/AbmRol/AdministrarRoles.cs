@@ -15,6 +15,8 @@ namespace PagoAgilFrba.AbmRol
     public partial class AdministrarRoles : Form
     {
         private bool salir = true;
+        private String nombreRolSeleccionado = "";
+        private int idNombreRolSeleccionado = 0;
 
         DataTable rolesActuales;
 
@@ -44,6 +46,9 @@ namespace PagoAgilFrba.AbmRol
             }
 
             checkBoxEstado.Checked = false;
+            buttonCambiarNombre.Enabled = false;
+            textBoxCambiarNombreRol.Visible = false;
+            textBoxCambiarNombreRol.Text = "";
             
         }
 
@@ -94,6 +99,11 @@ namespace PagoAgilFrba.AbmRol
                 {
                     checkedListBoxFuncionalidades.SetItemChecked(checkedListBoxFuncionalidades.Items.IndexOf(funcAct["nombreFuncionalidad"].ToString()), true);
                 }
+                                
+                nombreRolSeleccionado = rowRol[0][1].ToString();
+                idNombreRolSeleccionado = Int16.Parse(rowRol[0][0].ToString());
+                buttonCambiarNombre.Enabled = true;
+                
             }
 
         }
@@ -163,19 +173,36 @@ namespace PagoAgilFrba.AbmRol
 
             }
 
-            resetear();
+           
 
             SQLParametros parametros = new SQLParametros();
 
-            parametros.add("@rol", comboBoxSeleccionarRol.Text);
+            parametros.add("@rol", nombreRolSeleccionado);
+            if(textBoxCambiarNombreRol.Text!="")
+                parametros.add("@rolNombreNuevo", textBoxCambiarNombreRol.Text);
+            else
+                parametros.add("@rolNombreNuevo", nombreRolSeleccionado);
+            parametros.add("@id_rol", idNombreRolSeleccionado);
             parametros.add("@listaFuc", funciones);
             parametros.add("@estado", estado);
 
             ConexionDB.Procedure("asignarNuevasFuncAlRol", parametros.get());
 
-
+            resetear();
             this.ActualizarRoles();
 
+        }
+
+        private void buttonCambiarNombre_Click(object sender, EventArgs e)
+        {
+            textBoxCambiarNombreRol.Visible = true;
+            textBoxCambiarNombreRol.Text = nombreRolSeleccionado;
+
+        }
+
+        private void textBoxCambiarNombreRol_TextChanged(object sender, EventArgs e)
+        {
+            buttonGuardar.Enabled = true;
         }
    
     }
