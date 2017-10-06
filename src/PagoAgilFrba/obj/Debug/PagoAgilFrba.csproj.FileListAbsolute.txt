@@ -14,7 +14,6 @@ E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilF
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.pdb
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\bin\Debug\PagoAgilFrba.exe
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\bin\Debug\PagoAgilFrba.pdb
-E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.csprojResolveAssemblyReference.cache
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.Login.Login.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.Login.SeleccionarRol.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.Properties.Resources.resources
@@ -23,3 +22,7 @@ E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilF
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmFactura.AbmFactura.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmRol.AdministrarRoles.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmRol.NuevoRol.resources
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmCliente.AdministrarCliente.resources
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.csprojResolveAssemblyReference.cache
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmCliente.NuevoCliente.resources
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmCliente.ModificarEliminarCliente.resources

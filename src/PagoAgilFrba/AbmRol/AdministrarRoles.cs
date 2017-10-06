@@ -204,6 +204,11 @@ namespace PagoAgilFrba.AbmRol
         {
             buttonGuardar.Enabled = true;
         }
+
+        private void buttonVolver_Click(object sender, EventArgs e)
+        {
+
+        }
    
     }
 }

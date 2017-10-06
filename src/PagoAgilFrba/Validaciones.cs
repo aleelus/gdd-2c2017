@@ -14,7 +14,8 @@ namespace PagoAgilFrba
         static Regex regexMail = new Regex(@"^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$");
         static Regex regexSolofrases = new Regex(@"^[a-zA-ZáéíóúÁÉÍÓÚ ]+$");
         static Regex regexLetrasGuiones = new Regex(@"^[-_a-zA-ZáéíóúÁÉÍÓÚ]+$");
-
+        static Regex regexDpto = new Regex(@"^[a-zA-Z 0-9]+$");
+        static Regex regexDireccion = new Regex(@"^[a-zA-Z ]*[0-9]*$");
        
         public static bool validarSoloNumeros(string numero)
         {
@@ -39,6 +40,14 @@ namespace PagoAgilFrba
         public static bool ValidarLetrasGuiones(string cadena)
         {
             return regexLetrasGuiones.IsMatch(cadena);
+        }
+        public static bool ValidarDireccion(string cadena)
+        {
+            return regexDireccion.IsMatch(cadena);
+        }
+        public static bool ValidarDpto(string cadena)
+        {
+            return regexDpto.IsMatch(cadena);
         }
 
     }

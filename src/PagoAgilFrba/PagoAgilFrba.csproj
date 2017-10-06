@@ -44,11 +44,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbmCliente\Form1.cs">
+    <Compile Include="AbmCliente\AdministrarCliente.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmCliente\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="AbmCliente\AdministrarCliente.Designer.cs">
+      <DependentUpon>AdministrarCliente.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AbmCliente\NuevoCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AbmCliente\NuevoCliente.Designer.cs">
+      <DependentUpon>NuevoCliente.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AbmCliente\ModificarEliminarCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AbmCliente\ModificarEliminarCliente.Designer.cs">
+      <DependentUpon>ModificarEliminarCliente.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmEmpresa\Form1.cs">
       <SubType>Form</SubType>
@@ -140,6 +152,15 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Validaciones.cs" />
+    <EmbeddedResource Include="AbmCliente\AdministrarCliente.resx">
+      <DependentUpon>AdministrarCliente.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmCliente\NuevoCliente.resx">
+      <DependentUpon>NuevoCliente.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmCliente\ModificarEliminarCliente.resx">
+      <DependentUpon>ModificarEliminarCliente.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AbmFactura\AbmFactura.resx">
       <DependentUpon>AbmFactura.cs</DependentUpon>
     </EmbeddedResource>
