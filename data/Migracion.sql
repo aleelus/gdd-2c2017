@@ -79,6 +79,12 @@ IF OBJECT_ID('[GRUPO6].agregarNuevoRol') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].agregarNuevoRol
 IF OBJECT_ID('[GRUPO6].asignarNuevasFuncAlRol') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].asignarNuevasFuncAlRol
+IF OBJECT_ID('[GRUPO6].buscarCliente') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].buscarCliente
+IF OBJECT_ID('[GRUPO6].nuevoCliente') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].nuevoCliente
+IF OBJECT_ID('[GRUPO6].modificarCliente') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].modificarCliente
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -449,6 +455,117 @@ AS
         RETURN 
     END
 GO
+
+CREATE PROCEDURE [GRUPO6].buscarCliente
+@nombre varchar(255),
+@apellido varchar(255),
+@dni varchar(255)
+
+AS
+	BEGIN
+		SELECT cli.idCliente,cli.nombreCliente as 'Nombre', cli.apellidoCliente as 'Apellido' , cli.dniCliente as 'Documento',cli.mailCliente as 'E-mail', cli.telefonoCliente 'Telefono',
+				cli.direccionCliente as 'Direccion', cli.pisoCliente 'Piso', cli.dptoCliente as 'Dpto', cli.localidadCliente as 'Localidad', cli.CodigoPostalCliente as 'Cod Postal',cli.fechaNacimienteCliente as 'Fecha de Nacimiento', cli.estadoCliente as 'Estado'
+			FROM [GRUPO6].Cliente cli 	
+			WHERE cli.nombreCliente like '%'+@nombre+'%' AND
+			cli.apellidoCliente like '%'+@apellido+'%' 	AND
+			cli.dniCliente like '%'+@dni+'%'
+		RETURN
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].nuevoCliente
+@nombre varchar(max),
+@apellido varchar(max),
+@dni numeric(18,0),
+@email varchar(255),
+@telefono varchar(255),
+@direccion varchar(255),
+@piso varchar(10),
+@dpto varchar(10),
+@localidad varchar(255),
+@codPostal varchar(255),
+@fechaNac datetime,
+@estado varchar(10)
+
+AS
+	BEGIN
+	
+		DECLARE @error nvarchar(max)
+		
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Cliente WHERE dniCliente = @dni)
+			BEGIN
+				SET @error = 'El cliente con dni  '+@dni+' ya se encuentra registrado. Intente otro'
+				RAISERROR(@error,16,1)
+				RETURN
+			END
+			
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Cliente WHERE mailCliente = @email)
+			BEGIN
+				SET @error = 'El email '+@email+' ya se encuentra registrado. Intente otro'
+				RAISERROR(@error,16,1)
+				RETURN
+			END		
+				
+		INSERT INTO [GRUPO6].Cliente(nombreCliente,apellidoCliente,dniCliente,mailCliente,telefonoCliente,direccionCliente,pisoCliente,dptoCliente,localidadCliente,CodigoPostalCliente,fechaNacimienteCliente,estadoCliente)
+				VALUES(@nombre,@apellido,@dni,@email,@telefono,@direccion,@piso,@dpto,@localidad,@codPostal,@fechaNac,@estado)
+						
+		
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].modificarCliente
+@id_cliente numeric(18,0),
+@nombre varchar(255),
+@apellido varchar(255),
+@dni numeric(18,0),
+@email varchar(255),
+@telefono varchar(50),
+@direccion varchar(255),
+@piso varchar(10),
+@dpto varchar(10),
+@localidad varchar(255),
+@codPostal varchar(255),
+@fechaNac datetime,
+@estado varchar(10)
+
+AS
+	BEGIN
+	
+		DECLARE @error nvarchar(max)
+		
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Cliente WHERE dniCliente = @dni and idCliente != @id_cliente)
+			BEGIN
+				SET @error = 'El cliente con dni  '+CONVERT(varchar(255),@dni)+' ya se encuentra registrado. Intente otro'
+				RAISERROR(@error,16,1)
+				RETURN
+			END
+			
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Cliente WHERE mailCliente = @email and idCliente != @id_cliente)
+			BEGIN
+				SET @error = 'El email '+@email+' ya se encuentra registrado. Intente otro'
+				RAISERROR(@error,16,1)
+				RETURN
+			END		
+				
+		UPDATE [GRUPO6].Cliente 
+			SET nombreCliente=@nombre,
+				apellidoCliente=@apellido,
+				dniCliente=@dni,
+				mailCliente=@email,
+				telefonoCliente=@telefono,
+				direccionCliente=@direccion,
+				pisoCliente=@piso,
+				dptoCliente=@dpto,
+				localidadCliente=@localidad,
+				CodigoPostalCliente=@codPostal,
+				fechaNacimienteCliente=@fechaNac,
+				estadoCliente=@estado
+			WHERE idCliente=@id_cliente
+						
+		
+	END
+GO
+
 
 --------------------------------------------------------------
 				--INSERTO DATOS
