@@ -344,11 +344,11 @@ CREATE PROCEDURE [GRUPO6].obtenerRolesDeUsuario
 @id_usuario numeric(18,0)
 AS
 	BEGIN
-		SELECT rolUsuario.idRol,nombreRol 
-		FROM [GRUPO6].Rol_Usuario rolUsuario,[GRUPO6].Rol rol
+		SELECT rolUsuario.idRol,rol.nombreRol 
+		FROM [GRUPO6].Rol rol,[GRUPO6].Rol_Usuario rolUsuario
 		WHERE rolUsuario.idRol=rol.idRol  AND
 			  rol.estadoRol = 'Activo' AND 
-			  rolUsuario.idRol = @id_usuario
+			  rolUsuario.idUsuario = @id_usuario
 	END
 GO
     
@@ -591,7 +591,7 @@ INSERT INTO [GRUPO6].Rol(nombreRol, estadoRol)
 				('Cobrador', 'Activo')
 -------------------------------------------------------------------------------------------	 
 INSERT INTO [GRUPO6].Rol_Usuario(idRol, idUsuario)
-		VALUES (1,1),(2,2)		
+		VALUES (1,1),(2,1),(2,2)		
 -------------------------------------------------------------------------------------------				
 INSERT INTO [GRUPO6].Rol_Funcionalidad(idRol, idFuncionalidad)
 		VALUES (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9), (1,10),
