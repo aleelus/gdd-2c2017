@@ -58,12 +58,34 @@ namespace PagoAgilFrba.AbmEmpresa
 
 
             dataGridViewBuscarEmpresa.AutoResizeColumns();
-            dataGridViewBuscarEmpresa.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridViewBuscarEmpresa.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewBuscarEmpresa.RowHeadersVisible = false;
             dataGridViewBuscarEmpresa.AllowUserToAddRows = false;
 
 
 
+        }
+
+        private void textBoxNombre_TextChanged(object sender, EventArgs e)
+        {
+            ActulizarResultados();
+        }
+
+        private void textBoxApellido_TextChanged(object sender, EventArgs e)
+        {
+            ActulizarResultados();
+        }
+
+        private void comboBoxRubro_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            ActulizarResultados();
+        }
+
+        private void buttonNuevaEmpresa_Click(object sender, EventArgs e)
+        {
+            Form nuevoForm = new AbmEmpresa.NuevaEmpresa();
+            nuevoForm.Show(this);
+            this.Hide();
         }
 
 

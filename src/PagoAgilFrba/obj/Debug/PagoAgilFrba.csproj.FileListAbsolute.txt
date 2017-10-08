@@ -27,3 +27,4 @@ E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilF
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmCliente.NuevoCliente.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmCliente.ModificarEliminarCliente.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmEmpresa.AdministrarEmpresa.resources
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmEmpresa.NuevaEmpresa.resources

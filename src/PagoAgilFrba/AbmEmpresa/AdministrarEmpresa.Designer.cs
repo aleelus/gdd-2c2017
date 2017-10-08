@@ -33,12 +33,12 @@
             this.buttonNuevaEmpresa = new System.Windows.Forms.Button();
             this.dataGridViewBuscarEmpresa = new System.Windows.Forms.DataGridView();
             this.groupBoxBuscarEmpresas = new System.Windows.Forms.GroupBox();
+            this.comboBoxRubro = new System.Windows.Forms.ComboBox();
             this.labelRubro = new System.Windows.Forms.Label();
             this.textBoxApellido = new System.Windows.Forms.TextBox();
             this.labelCuit = new System.Windows.Forms.Label();
             this.textBoxNombre = new System.Windows.Forms.TextBox();
             this.labelNombre = new System.Windows.Forms.Label();
-            this.comboBoxRubro = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBuscarEmpresa)).BeginInit();
             this.groupBoxBuscarEmpresas.SuspendLayout();
             this.SuspendLayout();
@@ -72,6 +72,7 @@
             this.buttonNuevaEmpresa.TabIndex = 12;
             this.buttonNuevaEmpresa.Text = "Nueva Empresa";
             this.buttonNuevaEmpresa.UseVisualStyleBackColor = true;
+            this.buttonNuevaEmpresa.Click += new System.EventHandler(this.buttonNuevaEmpresa_Click);
             // 
             // dataGridViewBuscarEmpresa
             // 
@@ -99,6 +100,15 @@
             this.groupBoxBuscarEmpresas.TabStop = false;
             this.groupBoxBuscarEmpresas.Text = "Buscar Empresas";
             // 
+            // comboBoxRubro
+            // 
+            this.comboBoxRubro.FormattingEnabled = true;
+            this.comboBoxRubro.Location = new System.Drawing.Point(512, 25);
+            this.comboBoxRubro.Name = "comboBoxRubro";
+            this.comboBoxRubro.Size = new System.Drawing.Size(149, 21);
+            this.comboBoxRubro.TabIndex = 6;
+            this.comboBoxRubro.SelectionChangeCommitted += new System.EventHandler(this.comboBoxRubro_SelectionChangeCommitted);
+            // 
             // labelRubro
             // 
             this.labelRubro.AutoSize = true;
@@ -115,6 +125,7 @@
             this.textBoxApellido.Name = "textBoxApellido";
             this.textBoxApellido.Size = new System.Drawing.Size(149, 20);
             this.textBoxApellido.TabIndex = 4;
+            this.textBoxApellido.TextChanged += new System.EventHandler(this.textBoxApellido_TextChanged);
             // 
             // labelCuit
             // 
@@ -132,6 +143,7 @@
             this.textBoxNombre.Name = "textBoxNombre";
             this.textBoxNombre.Size = new System.Drawing.Size(149, 20);
             this.textBoxNombre.TabIndex = 2;
+            this.textBoxNombre.TextChanged += new System.EventHandler(this.textBoxNombre_TextChanged);
             // 
             // labelNombre
             // 
@@ -142,15 +154,6 @@
             this.labelNombre.Size = new System.Drawing.Size(58, 15);
             this.labelNombre.TabIndex = 0;
             this.labelNombre.Text = "Nombre";
-            // 
-            // comboBoxRubro
-            // 
-            this.comboBoxRubro.FormattingEnabled = true;
-            this.comboBoxRubro.Location = new System.Drawing.Point(512, 25);
-            this.comboBoxRubro.Name = "comboBoxRubro";
-            this.comboBoxRubro.Size = new System.Drawing.Size(149, 21);
-            this.comboBoxRubro.TabIndex = 6;
-
             // 
             // AdministrarEmpresa
             // 
