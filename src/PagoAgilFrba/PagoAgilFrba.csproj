@@ -68,6 +68,12 @@
     <Compile Include="AbmEmpresa\AdministrarEmpresa.Designer.cs">
       <DependentUpon>AdministrarEmpresa.cs</DependentUpon>
     </Compile>
+    <Compile Include="AbmEmpresa\ModificarEliminarEmpresa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AbmEmpresa\ModificarEliminarEmpresa.Designer.cs">
+      <DependentUpon>ModificarEliminarEmpresa.cs</DependentUpon>
+    </Compile>
     <Compile Include="AbmEmpresa\NuevaEmpresa.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -169,6 +175,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AbmEmpresa\AdministrarEmpresa.resx">
       <DependentUpon>AdministrarEmpresa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmEmpresa\ModificarEliminarEmpresa.resx">
+      <DependentUpon>ModificarEliminarEmpresa.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmEmpresa\NuevaEmpresa.resx">
       <DependentUpon>NuevaEmpresa.cs</DependentUpon>

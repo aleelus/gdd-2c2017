@@ -87,7 +87,7 @@ namespace PagoAgilFrba.AbmRol
             buttonGuardar.Enabled = false;
 
             SQLParametros parametros = new SQLParametros();
-            parametros.add("@nombre", comboBoxSeleccionarRol.SelectedValue);
+            parametros.add("@id_rol", comboBoxSeleccionarRol.SelectedValue);
 
             DataTable funcsActivas;
 

@@ -10,7 +10,7 @@ namespace PagoAgilFrba
     public static class Sesion
     {
         public static SqlConnection conexion;
-        
+        public static DateTime fechaActual;
 
         public static decimal rol_id;
         public static string rol_nombre;

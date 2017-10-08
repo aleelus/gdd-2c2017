@@ -11,12 +11,13 @@ using PagoAgilFrba.BaseDeDatos.ConexionDB;
 
 namespace PagoAgilFrba.AbmEmpresa
 {
-    public partial class NuevaEmpresa : Form
+    public partial class ModificarEliminarEmpresa : Form
     {
 
+        private decimal idEmpresa;
         private bool salir = true;
 
-        public NuevaEmpresa()
+        public ModificarEliminarEmpresa()
         {
             InitializeComponent();
 
@@ -57,34 +58,6 @@ namespace PagoAgilFrba.AbmEmpresa
             return correcto;
         }
 
-        private void buttonCrear_Click(object sender, EventArgs e)
-        {
-
-            if (validar())
-            {
-                SQLParametros parametros = new SQLParametros();
-                DateTime fecha = new DateTime(2018, 10, 19);  // FECHA HARDCODEADA POR EL MOMENTO
-
-                parametros.add("@nombre", textBoxNombre.Text);
-                parametros.add("@cuit", textBoxCuit.Text);
-                parametros.add("@direccion", textBoxDireccion.Text);
-                parametros.add("@idRubro", Convert.ToDecimal(comboBoxRubro.SelectedValue));
-                parametros.add("@fecha", fecha);
-                parametros.add("@estado", checkBoxEstado.Text);
-
-                if (ConexionDB.Procedure("nuevaEmpresa", parametros.get()))
-                {
-                    MessageBox.Show("La empresa " + textBoxNombre.Text + " se ha creado");
-
-                }
-            }
-
-
-
-        }
-
-
-
         private void checkBoxEstado_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBoxEstado.Checked)
@@ -97,13 +70,52 @@ namespace PagoAgilFrba.AbmEmpresa
             }
         }
 
-        private void buttonCancelar_Click(object sender, EventArgs e)
+        private void buttonGuardar_Click(object sender, EventArgs e)
+        {
+
+            if (validar())
+            {
+                SQLParametros parametros = new SQLParametros();
+
+                parametros.add("@id_empresa", idEmpresa);
+                parametros.add("@nombre", textBoxNombre.Text);
+                parametros.add("@cuit", textBoxCuit.Text);
+                parametros.add("@direccion", textBoxDireccion.Text);
+                parametros.add("@idRubro", Convert.ToDecimal(comboBoxRubro.SelectedValue));
+                parametros.add("@fechaActual", Sesion.fechaActual);
+                parametros.add("@estado", checkBoxEstado.Text);
+
+                if (ConexionDB.Procedure("modificarEmpresa", parametros.get()))
+                {
+                    MessageBox.Show("La empresa " + textBoxNombre.Text + " se ha modificado");
+
+                }
+            }
+                        
+        }
+
+        public void recibirDatos(DataGridViewCellCollection cell)
+        {
+            idEmpresa = Convert.ToDecimal(cell["idEmpresa"].Value);
+            textBoxNombre.Text = cell["Nombre"].Value.ToString();
+            textBoxCuit.Text = cell["Cuit"].Value.ToString();
+            textBoxDireccion.Text = cell["Direccion"].Value.ToString();
+            comboBoxRubro.SelectedValue = cell["Rubro"].Value; 
+            checkBoxEstado.Text = cell["Estado"].Value.ToString();
+            if (checkBoxEstado.Text.Contains("Activo"))
+                checkBoxEstado.Checked = true;
+            else
+                checkBoxEstado.Checked = false;
+
+
+        }
+
+        private void buttonVolver_Click(object sender, EventArgs e)
         {
             salir = false;
             Owner.Show();
             this.Close();
         }
-
 
     }
 }

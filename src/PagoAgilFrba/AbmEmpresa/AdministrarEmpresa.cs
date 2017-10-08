@@ -13,6 +13,9 @@ namespace PagoAgilFrba.AbmEmpresa
 {
     public partial class AdministrarEmpresa : Form
     {
+
+        private bool salir = true;
+
         public AdministrarEmpresa()
         {
             InitializeComponent();
@@ -31,6 +34,7 @@ namespace PagoAgilFrba.AbmEmpresa
                 comboBoxRubro.ValueMember = "idRubro";
                 comboBoxRubro.DataSource = rubros;
                 comboBoxRubro.Update();
+                comboBoxRubro.SelectedIndex = -1;
     
             }
 
@@ -44,7 +48,7 @@ namespace PagoAgilFrba.AbmEmpresa
 
             parametros.add("@nombre", textBoxNombre.Text);
             parametros.add("@cuit", textBoxApellido.Text);
-            parametros.add("@rubro", comboBoxRubro.SelectedText);
+            parametros.add("@id_rubro", comboBoxRubro.SelectedValue);
 
 
 
@@ -54,6 +58,7 @@ namespace PagoAgilFrba.AbmEmpresa
             {
                 dataGridViewBuscarEmpresa.DataSource = empresasEncontradas;
                 dataGridViewBuscarEmpresa.Columns[0].Visible = false;
+                dataGridViewBuscarEmpresa.Columns[1].Visible = false;
             }
 
 
@@ -63,7 +68,7 @@ namespace PagoAgilFrba.AbmEmpresa
             dataGridViewBuscarEmpresa.AllowUserToAddRows = false;
 
 
-
+            comboBoxRubro.SelectedIndex = -1;
         }
 
         private void textBoxNombre_TextChanged(object sender, EventArgs e)
@@ -86,6 +91,33 @@ namespace PagoAgilFrba.AbmEmpresa
             Form nuevoForm = new AbmEmpresa.NuevaEmpresa();
             nuevoForm.Show(this);
             this.Hide();
+        }
+
+        private void buttonModificarEliminar_Click(object sender, EventArgs e)
+        {
+            salir = false;
+            Form nuevoForm = null;
+
+            DataGridViewCellCollection cell;
+            if (dataGridViewBuscarEmpresa.SelectedRows.Count > 0)
+            {
+                cell = dataGridViewBuscarEmpresa.SelectedRows[0].Cells;
+                nuevoForm = new AbmEmpresa.ModificarEliminarEmpresa();
+                ModificarEliminarEmpresa nuevo = (ModificarEliminarEmpresa)nuevoForm;
+                nuevo.recibirDatos(cell);
+                nuevo.Show(this);
+                dataGridViewBuscarEmpresa.DataSource = null;
+                this.Hide();
+            }
+            else
+                MessageBox.Show("Debe seleccionar una fila antes");
+        }
+
+        private void buttonVolver_Click(object sender, EventArgs e)
+        {
+            salir = false;
+            Owner.Show();
+            this.Close();
         }
 
 

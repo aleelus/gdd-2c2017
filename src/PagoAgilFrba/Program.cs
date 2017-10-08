@@ -21,10 +21,12 @@ namespace PagoAgilFrba
 
             string ruta = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
             System.IO.StreamReader file = new StreamReader(Path.Combine(ruta, "config.txt"));
-            string sqlcon = file.ReadLine();            
+            string sqlcon = file.ReadLine();
+            string fechaF = file.ReadLine();
             file.Close();
 
             Sesion.conexion = ConexionDB.ConectarDB(sqlcon);
+            Sesion.fechaActual = DateTime.Parse(fechaF);
             
 
             Application.Run(new Login.Login());

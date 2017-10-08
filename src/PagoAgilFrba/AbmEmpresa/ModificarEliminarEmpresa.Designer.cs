@@ -1,6 +1,6 @@
 ﻿namespace PagoAgilFrba.AbmEmpresa
 {
-    partial class NuevaEmpresa
+    partial class ModificarEliminarEmpresa
     {
         /// <summary>
         /// Required designer variable.
@@ -30,8 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.buttonCancelar = new System.Windows.Forms.Button();
-            this.buttonCrear = new System.Windows.Forms.Button();
+            this.comboBoxRubro = new System.Windows.Forms.ComboBox();
+            this.buttonVolver = new System.Windows.Forms.Button();
+            this.buttonGuardar = new System.Windows.Forms.Button();
             this.checkBoxEstado = new System.Windows.Forms.CheckBox();
             this.labelEstado = new System.Windows.Forms.Label();
             this.textBoxDireccion = new System.Windows.Forms.TextBox();
@@ -41,7 +42,6 @@
             this.labelCuit = new System.Windows.Forms.Label();
             this.textBoxNombre = new System.Windows.Forms.TextBox();
             this.labelNombre = new System.Windows.Forms.Label();
-            this.comboBoxRubro = new System.Windows.Forms.ComboBox();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -50,8 +50,8 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.comboBoxRubro);
-            this.groupBox1.Controls.Add(this.buttonCancelar);
-            this.groupBox1.Controls.Add(this.buttonCrear);
+            this.groupBox1.Controls.Add(this.buttonVolver);
+            this.groupBox1.Controls.Add(this.buttonGuardar);
             this.groupBox1.Controls.Add(this.checkBoxEstado);
             this.groupBox1.Controls.Add(this.labelEstado);
             this.groupBox1.Controls.Add(this.textBoxDireccion);
@@ -65,31 +65,39 @@
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(543, 144);
-            this.groupBox1.TabIndex = 1;
+            this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Datos de la Empresa";
             // 
-            // buttonCancelar
+            // comboBoxRubro
             // 
-            this.buttonCancelar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCancelar.Location = new System.Drawing.Point(139, 88);
-            this.buttonCancelar.Name = "buttonCancelar";
-            this.buttonCancelar.Size = new System.Drawing.Size(97, 29);
-            this.buttonCancelar.TabIndex = 30;
-            this.buttonCancelar.Text = "Cancelar";
-            this.buttonCancelar.UseVisualStyleBackColor = true;
-            this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
+            this.comboBoxRubro.FormattingEnabled = true;
+            this.comboBoxRubro.Location = new System.Drawing.Point(343, 52);
+            this.comboBoxRubro.Name = "comboBoxRubro";
+            this.comboBoxRubro.Size = new System.Drawing.Size(149, 23);
+            this.comboBoxRubro.TabIndex = 31;
             // 
-            // buttonCrear
+            // buttonVolver
             // 
-            this.buttonCrear.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonCrear.Location = new System.Drawing.Point(17, 88);
-            this.buttonCrear.Name = "buttonCrear";
-            this.buttonCrear.Size = new System.Drawing.Size(97, 29);
-            this.buttonCrear.TabIndex = 29;
-            this.buttonCrear.Text = "Crear";
-            this.buttonCrear.UseVisualStyleBackColor = true;
-            this.buttonCrear.Click += new System.EventHandler(this.buttonCrear_Click);
+            this.buttonVolver.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonVolver.Location = new System.Drawing.Point(139, 88);
+            this.buttonVolver.Name = "buttonVolver";
+            this.buttonVolver.Size = new System.Drawing.Size(97, 29);
+            this.buttonVolver.TabIndex = 30;
+            this.buttonVolver.Text = "Volver";
+            this.buttonVolver.UseVisualStyleBackColor = true;
+            this.buttonVolver.Click += new System.EventHandler(this.buttonVolver_Click);
+            // 
+            // buttonGuardar
+            // 
+            this.buttonGuardar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonGuardar.Location = new System.Drawing.Point(17, 88);
+            this.buttonGuardar.Name = "buttonGuardar";
+            this.buttonGuardar.Size = new System.Drawing.Size(97, 29);
+            this.buttonGuardar.TabIndex = 29;
+            this.buttonGuardar.Text = "Guardar";
+            this.buttonGuardar.UseVisualStyleBackColor = true;
+            this.buttonGuardar.Click += new System.EventHandler(this.buttonGuardar_Click);
             // 
             // checkBoxEstado
             // 
@@ -175,29 +183,21 @@
             this.labelNombre.Text = "Nombre";
             this.labelNombre.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
-            // comboBoxRubro
-            // 
-            this.comboBoxRubro.FormattingEnabled = true;
-            this.comboBoxRubro.Location = new System.Drawing.Point(343, 52);
-            this.comboBoxRubro.Name = "comboBoxRubro";
-            this.comboBoxRubro.Size = new System.Drawing.Size(149, 23);
-            this.comboBoxRubro.TabIndex = 31;
-            // 
             // errorProvider1
             // 
             this.errorProvider1.ContainerControl = this;
             // 
-            // NuevaEmpresa
+            // ModificarEliminarEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.CadetBlue;
-            this.ClientSize = new System.Drawing.Size(577, 170);
+            this.ClientSize = new System.Drawing.Size(568, 168);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "NuevaEmpresa";
+            this.Name = "ModificarEliminarEmpresa";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Nueva Empresa";
+            this.Text = "Modificar / Eliminar Empresa";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
@@ -208,8 +208,9 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button buttonCancelar;
-        private System.Windows.Forms.Button buttonCrear;
+        private System.Windows.Forms.ComboBox comboBoxRubro;
+        private System.Windows.Forms.Button buttonVolver;
+        private System.Windows.Forms.Button buttonGuardar;
         private System.Windows.Forms.CheckBox checkBoxEstado;
         private System.Windows.Forms.Label labelEstado;
         private System.Windows.Forms.TextBox textBoxDireccion;
@@ -219,7 +220,6 @@
         private System.Windows.Forms.Label labelCuit;
         private System.Windows.Forms.TextBox textBoxNombre;
         private System.Windows.Forms.Label labelNombre;
-        private System.Windows.Forms.ComboBox comboBoxRubro;
         private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

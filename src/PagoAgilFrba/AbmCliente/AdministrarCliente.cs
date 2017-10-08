@@ -72,9 +72,7 @@ namespace PagoAgilFrba.AbmCliente
 
        private void buttonVolver_Click(object sender, EventArgs e)
        {
-
-           ((DataTable)(dataGridViewBuscarCliente.DataSource)).Dispose();
-
+                   
             salir = false;
             Owner.Show();
             this.Close();
