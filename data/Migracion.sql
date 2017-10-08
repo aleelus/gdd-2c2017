@@ -85,6 +85,10 @@ IF OBJECT_ID('[GRUPO6].nuevoCliente') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevoCliente
 IF OBJECT_ID('[GRUPO6].modificarCliente') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].modificarCliente
+IF OBJECT_ID('[GRUPO6].buscarEmpresa') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].buscarEmpresa
+IF OBJECT_ID('[GRUPO6].obtenerRubros') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerRubros
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -350,8 +354,7 @@ AS
 			  rol.estadoRol = 'Activo' AND 
 			  rolUsuario.idUsuario = @id_usuario
 	END
-GO
-    
+GO    
 
 CREATE PROCEDURE [GRUPO6].obtenerFuncionalidadesDeRol
 @id_rol numeric(18,0)
@@ -566,6 +569,31 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].buscarEmpresa
+@nombre varchar(255),
+@cuit varchar(255),
+@rubro varchar(255)
+
+AS
+	BEGIN
+		SELECT idEmpresa, nombreEmpresa as 'Nombre', cuitEmpresa as ' Cuit', direccionEmpresa as 'Direccion', fechaRendicionEmpresa as 'Fecha de Rendicion', estadoEmpresa as 'Estado'
+			FROM [GRUPO6].Empresa 	
+			JOIN GRUPO6.Rubro
+			ON descripcionRubro = @rubro
+			WHERE nombreEmpresa like '%'+@nombre+'%' AND
+			cuitEmpresa like '%'+@cuit+'%'
+		RETURN
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].obtenerRubros
+AS
+	BEGIN
+		SELECT *
+		FROM [GRUPO6].Rubro
+	END
+GO
+
 
 --------------------------------------------------------------
 				--INSERTO DATOS
@@ -596,6 +624,14 @@ INSERT INTO [GRUPO6].Rol_Usuario(idRol, idUsuario)
 INSERT INTO [GRUPO6].Rol_Funcionalidad(idRol, idFuncionalidad)
 		VALUES (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9), (1,10),
 				(2,3), (2,4), (2,6), (2,7), (2,9)
+-------------------------------------------------------------------------------------------		
+INSERT INTO [GRUPO6].Rubro(descripcionRubro)
+		VALUES	('Internet'),
+				('Agua'),
+				('Luz'),
+				('Comunicaciones'),
+				('Obra Social'),
+				('Institucion escolar')
     
       
       
