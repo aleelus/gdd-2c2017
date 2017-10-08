@@ -89,6 +89,8 @@ IF OBJECT_ID('[GRUPO6].buscarEmpresa') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].buscarEmpresa
 IF OBJECT_ID('[GRUPO6].obtenerRubros') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerRubros
+IF OBJECT_ID('[GRUPO6].nuevaEmpresa') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].nuevaEmpresa
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -594,6 +596,33 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].nuevaEmpresa
+@nombre varchar(255),
+@cuit varchar(50),
+@direccion varchar(255),
+@idRubro numeric(18,0),
+@fecha datetime,
+@estado varchar(10)
+
+AS
+	BEGIN
+	
+		DECLARE @error nvarchar(max)	
+
+			
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Empresa WHERE cuitEmpresa = @cuit)
+			BEGIN
+				SET @error = 'El cuit '+@cuit+' ya se encuentra registrado. Intente otro'
+				RAISERROR(@error,16,1)
+				RETURN
+			END		
+				
+		INSERT INTO [GRUPO6].Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,estadoEmpresa,fechaRendicionEmpresa)
+				VALUES(@nombre,@cuit,@direccion,@idRubro,@estado,@fecha)
+						
+		
+	END
+GO
 
 --------------------------------------------------------------
 				--INSERTO DATOS
