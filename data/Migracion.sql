@@ -91,6 +91,8 @@ IF OBJECT_ID('[GRUPO6].obtenerRubros') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerRubros
 IF OBJECT_ID('[GRUPO6].nuevaEmpresa') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevaEmpresa
+IF OBJECT_ID('[GRUPO6].modificarEmpresa') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].modificarEmpresa
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -386,14 +388,14 @@ AS
 GO
 
 CREATE PROCEDURE [GRUPO6].funcionesDelRol
-	@nombre nvarchar(255)
+	@id_rol numeric(18,0)
 AS
 
 	SELECT Rol.nombreRol, Fun.nombreFuncionalidad, Fun.idFuncionalidad
 		FROM [GRUPO6].Funcionalidad Fun, [GRUPO6].Rol Rol, [GRUPO6].Rol_Funcionalidad Rel
 		WHERE Rel.idRol = Rol.idRol AND
 			Rel.idFuncionalidad = Fun.idFuncionalidad AND
-			Rol.idRol = @nombre
+			Rol.idRol = @id_rol
 GO
 
 CREATE PROCEDURE [GRUPO6].agregarNuevoRol
@@ -573,17 +575,18 @@ GO
 
 CREATE PROCEDURE [GRUPO6].buscarEmpresa
 @nombre varchar(255),
-@cuit varchar(255),
-@rubro varchar(255)
+@cuit varchar(50),
+@id_rubro numeric(18,0)
 
 AS
 	BEGIN
-		SELECT idEmpresa, nombreEmpresa as 'Nombre', cuitEmpresa as ' Cuit', direccionEmpresa as 'Direccion', fechaRendicionEmpresa as 'Fecha de Rendicion', estadoEmpresa as 'Estado'
-			FROM [GRUPO6].Empresa 	
-			JOIN GRUPO6.Rubro
-			ON descripcionRubro = @rubro
-			WHERE nombreEmpresa like '%'+@nombre+'%' AND
-			cuitEmpresa like '%'+@cuit+'%'
+		SELECT emp.idEmpresa,emp.idRubro as 'Rubro',emp.nombreEmpresa as 'Nombre', emp.cuitEmpresa as 'Cuit', emp.direccionEmpresa as 'Direccion',emp.fechaRendicionEmpresa as 'Fecha de Rendicion', emp.estadoEmpresa as 'Estado'
+			FROM [GRUPO6].Empresa emp
+			WHERE emp.nombreEmpresa like '%'+@nombre+'%' AND
+			emp.cuitEmpresa like '%'+@cuit+'%' AND
+			emp.idRubro = @id_rubro
+
+
 		RETURN
 	END
 GO
@@ -619,6 +622,48 @@ AS
 				
 		INSERT INTO [GRUPO6].Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,estadoEmpresa,fechaRendicionEmpresa)
 				VALUES(@nombre,@cuit,@direccion,@idRubro,@estado,@fecha)
+						
+		
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].modificarEmpresa
+@id_empresa numeric(18,0),
+@nombre varchar(255),
+@cuit varchar(50),
+@direccion varchar(255),
+@idRubro numeric(18,0),
+@fechaActual datetime,
+@estado varchar(10)
+
+AS
+	BEGIN
+	
+		DECLARE @error nvarchar(max)
+		
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Empresa WHERE cuitEmpresa = @cuit and idEmpresa != @id_empresa)
+			BEGIN
+				SET @error = 'La empresa con cuit  '+@cuit+' ya se encuentra registrada. Intente otra'
+				RAISERROR(@error,16,1)
+				RETURN
+			END
+
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Factura Fac					
+					JOIN GRUPO6.RegistroPago RegPago ON (RegPago.numeroFactura = Fac.numeroFactura AND Fac.idEmpresa=@id_empresa)					
+					WHERE NOT EXISTS (SELECT 1 FROM GRUPO6.Rendicion Rend WHERE Rend.idFactura=Fac.idFactura)) -- REVISAR ESTA CONSULTA!!!!
+			BEGIN
+				SET @error = 'La empresa con cuit  '+@cuit+' tiene rendiciones pendientes'
+				RAISERROR(@error,16,1)
+				RETURN
+			END				
+				
+		UPDATE [GRUPO6].Empresa 
+			SET nombreEmpresa=@nombre,
+				cuitEmpresa=@cuit,
+				direccionEmpresa=@direccion,
+				idRubro=@idRubro,
+				estadoEmpresa=@estado				
+			WHERE idEmpresa=@id_empresa
 						
 		
 	END
