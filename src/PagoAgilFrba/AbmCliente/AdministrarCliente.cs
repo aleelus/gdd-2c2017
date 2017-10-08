@@ -49,11 +49,7 @@ namespace PagoAgilFrba.AbmCliente
             dataGridViewBuscarCliente.AutoResizeColumns();
             dataGridViewBuscarCliente.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewBuscarCliente.RowHeadersVisible = false;
-            dataGridViewBuscarCliente.AllowUserToAddRows = false;
-
-
-           
-           
+            dataGridViewBuscarCliente.AllowUserToAddRows = false;          
            
             
 

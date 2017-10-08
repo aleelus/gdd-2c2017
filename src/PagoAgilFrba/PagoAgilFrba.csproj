@@ -62,11 +62,11 @@
     <Compile Include="AbmCliente\ModificarEliminarCliente.Designer.cs">
       <DependentUpon>ModificarEliminarCliente.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmEmpresa\Form1.cs">
+    <Compile Include="AbmEmpresa\AdministrarEmpresa.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmEmpresa\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="AbmEmpresa\AdministrarEmpresa.Designer.cs">
+      <DependentUpon>AdministrarEmpresa.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmFactura\AbmFactura.cs">
       <SubType>Form</SubType>
@@ -160,6 +160,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AbmCliente\ModificarEliminarCliente.resx">
       <DependentUpon>ModificarEliminarCliente.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmEmpresa\AdministrarEmpresa.resx">
+      <DependentUpon>AdministrarEmpresa.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmFactura\AbmFactura.resx">
       <DependentUpon>AbmFactura.cs</DependentUpon>
