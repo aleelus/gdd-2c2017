@@ -93,6 +93,12 @@ IF OBJECT_ID('[GRUPO6].nuevaEmpresa') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevaEmpresa
 IF OBJECT_ID('[GRUPO6].modificarEmpresa') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].modificarEmpresa
+IF OBJECT_ID('[GRUPO6].buscarSucursal') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].buscarSucursal
+IF OBJECT_ID('[GRUPO6].nuevaSucursal') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].nuevaSucursal
+IF OBJECT_ID('[GRUPO6].modificarSucursal') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].modificarSucursal
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -669,6 +675,89 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].buscarSucursal
+@nombre varchar(255),
+@direccion varchar(255),
+@codPostal varchar(255)
+
+AS
+	BEGIN
+		SELECT suc.idSucursal, suc.nombreSucursal as 'Nombre', suc.direccionSucursal as 'Direccion', suc.CodigoPostalSucursal as 'Cod Postal', suc.estadoSucursal as 'Estado'
+			FROM [GRUPO6].Sucursal suc
+			WHERE suc.nombreSucursal like '%'+@nombre+'%' AND
+			suc.direccionSucursal like '%'+@direccion+'%' 	AND
+			suc.CodigoPostalSucursal like '%'+@codPostal+'%'
+		RETURN
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].nuevaSucursal
+@nombre varchar(255),
+@direccion varchar(255),
+@codPostal varchar(50),
+@estado varchar(10)
+
+AS
+	BEGIN
+	
+		DECLARE @error nvarchar(max)	
+
+			
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Sucursal WHERE CodigoPostalSucursal= @codPostal)
+			BEGIN
+				SET @error = 'El Codigo Postal '+@codPostal+' ya se encuentra registrado. Intente otro'
+				RAISERROR(@error,16,1)
+				RETURN
+			END		
+				
+		INSERT INTO [GRUPO6].Sucursal(nombreSucursal,direccionSucursal,CodigoPostalSucursal,estadoSucursal)
+				VALUES(@nombre,@direccion,@codPostal,@estado)
+						
+		
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].modificarSucursal
+@id_sucursal numeric(18,0),
+@nombre varchar(255),
+@direccion varchar(255),
+@codPostal varchar(255),
+@estado varchar(10)
+
+AS
+	BEGIN
+	
+		DECLARE @error nvarchar(max)
+		
+		IF EXISTS (SELECT 1 FROM [GRUPO6].Sucursal WHERE CodigoPostalSucursal = @codPostal and idSucursal!= @id_sucursal)
+			BEGIN
+				SET @error = 'La sucursal con codigo postal '+@codPostal+' ya se encuentra registrada. Intente otra'
+				RAISERROR(@error,16,1)
+				RETURN
+			END
+
+		BEGIN TRANSACTION bajaAUsuariosPorSucursalInactiva
+
+			IF (@estado = 'Inactivo')
+				BEGIN
+					UPDATE [GRUPO6].Usuario 
+						SET estadoUsuario='Inactivo'
+						WHERE idUsuario = (SELECT u_suc.idUsuario FROM GRUPO6.Usuario_Sucursal u_suc WHERE (u_suc.idSucursal = @id_sucursal AND u_suc.idUsuario != 1)) -- NO SE PUEDE DAR DE BAJA AL ADMIN
+				END			
+				
+			UPDATE [GRUPO6].Sucursal 
+				SET nombreSucursal=@nombre,
+					direccionSucursal=@direccion,
+					CodigoPostalSucursal=@codPostal,
+					estadoSucursal=@estado				
+				WHERE idSucursal=@id_sucursal
+
+		COMMIT TRANSACTION bajaAUsuariosPorSucursalInactiva
+						
+		
+	END
+GO
+
 --------------------------------------------------------------
 				--INSERTO DATOS
 --------------------------------------------------------------
@@ -678,7 +767,6 @@ INSERT INTO [GRUPO6].Usuario(loginUsuario,passwordUsuario,estadoUsuario)
 -------------------------------------------------------------------------------------------		
 INSERT INTO [GRUPO6].Funcionalidad(nombreFuncionalidad)
 		VALUES	('ABM Rol'),
-				('Registro de Usuario'),
 				('ABM Cliente'),
 				('ABM Empresa'),
 				('ABM Sucursal'),
@@ -696,7 +784,7 @@ INSERT INTO [GRUPO6].Rol_Usuario(idRol, idUsuario)
 		VALUES (1,1),(2,1),(2,2)		
 -------------------------------------------------------------------------------------------				
 INSERT INTO [GRUPO6].Rol_Funcionalidad(idRol, idFuncionalidad)
-		VALUES (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9), (1,10),
+		VALUES (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), (1,9),
 				(2,3), (2,4), (2,6), (2,7), (2,9)
 -------------------------------------------------------------------------------------------		
 INSERT INTO [GRUPO6].Rubro(descripcionRubro)
@@ -706,6 +794,12 @@ INSERT INTO [GRUPO6].Rubro(descripcionRubro)
 				('Comunicaciones'),
 				('Obra Social'),
 				('Institucion escolar')
+-------------------------------------------------------------------------------------------	 
+INSERT INTO GRUPO6.Sucursal(nombreSucursal,direccionSucursal,CodigoPostalSucursal,estadoSucursal)
+		VALUES ('UTN-Medrano','Medrano 951','1111','Activo') ------ INSERT DE PRUEBA, DESPUES SACARLO CUANDO SE MIGRE BIEN TODO
+-------------------------------------------------------------------------------------------	 
+INSERT INTO [GRUPO6].Usuario_Sucursal(idUsuario, idSucursal)
+		VALUES (1,1),(2,1)
     
       
       

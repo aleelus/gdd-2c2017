@@ -76,10 +76,7 @@ namespace PagoAgilFrba.Login
             {
                 case "ABM Rol":
                     nuevoForm = new AbmRol.AdministrarRoles();
-                    break;
-                case "Registro de Usuario":
-                    nuevoForm = new Usuario.Form1();
-                    break;
+                    break;  
                 case "ABM Cliente":
                     nuevoForm = new AbmCliente.AdministrarCliente();
                     break;
@@ -87,7 +84,7 @@ namespace PagoAgilFrba.Login
                     nuevoForm = new AbmEmpresa.AdministrarEmpresa();
                     break;
                 case "ABM Sucursal":
-                    nuevoForm = new AbmSucursal.Form1();
+                    nuevoForm = new AbmSucursal.AdministrarSucursal();
                     break;
                 case "ABM Facturas":
                     nuevoForm = new AbmFactura.AbmFactura();

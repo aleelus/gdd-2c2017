@@ -92,6 +92,7 @@ namespace PagoAgilFrba.AbmCliente
                ModificarEliminarCliente nuevo = (ModificarEliminarCliente)nuevoForm;
                nuevo.recibirDatos(cell);
                nuevo.Show(this);
+               dataGridViewBuscarCliente.DataSource = null;
                this.Hide();
            }
            else
@@ -102,6 +103,7 @@ namespace PagoAgilFrba.AbmCliente
        {
            Form nuevoForm = new AbmCliente.NuevoCliente();
            nuevoForm.Show(this);
+           dataGridViewBuscarCliente.DataSource = null;
            this.Hide();
        }
     }

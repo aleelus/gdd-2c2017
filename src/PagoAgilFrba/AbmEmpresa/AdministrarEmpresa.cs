@@ -116,7 +116,7 @@ namespace PagoAgilFrba.AbmEmpresa
         private void buttonVolver_Click(object sender, EventArgs e)
         {
             salir = false;
-            Owner.Show();
+            Owner.Show();            
             this.Close();
         }
 
