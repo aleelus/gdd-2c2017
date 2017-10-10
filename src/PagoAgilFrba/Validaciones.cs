@@ -16,7 +16,7 @@ namespace PagoAgilFrba
         static Regex regexLetrasGuiones = new Regex(@"^[-_a-zA-ZáéíóúÁÉÍÓÚ]+$");
         static Regex regexNumerosGuiones = new Regex(@"^[-0-9]+$");
         static Regex regexDpto = new Regex(@"^[a-zA-Z 0-9]+$");
-        static Regex regexDireccion = new Regex(@"^[a-zA-Z ]*[0-9]*$");
+        static Regex regexDireccion = new Regex(@"^[a-zA-Z .]*[0-9]*$"); //CORREGIR ESTO DESPUES (ADMITE EL PUNTO SOLO)
        
         public static bool validarSoloNumeros(string numero)
         {

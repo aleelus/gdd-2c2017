@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace PagoAgilFrba.AbmFactura
 {
-    public partial class AbmFactura : Form
+    public partial class NuevoItem : Form
     {
-        public AbmFactura()
+        public NuevoItem()
         {
             InitializeComponent();
         }

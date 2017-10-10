@@ -68,7 +68,7 @@ namespace PagoAgilFrba.AbmEmpresa
                 parametros.add("@nombre", textBoxNombre.Text);
                 parametros.add("@cuit", textBoxCuit.Text);
                 parametros.add("@direccion", textBoxDireccion.Text);
-                parametros.add("@idRubro", Convert.ToDecimal(comboBoxRubro.SelectedValue));
+                parametros.add("@idRubro", comboBoxRubro.SelectedValue.ToString());
                 parametros.add("@fecha", fecha);
                 parametros.add("@estado", checkBoxEstado.Text);
 
@@ -103,6 +103,8 @@ namespace PagoAgilFrba.AbmEmpresa
             Owner.Show();
             this.Close();
         }
+
+      
 
 
     }

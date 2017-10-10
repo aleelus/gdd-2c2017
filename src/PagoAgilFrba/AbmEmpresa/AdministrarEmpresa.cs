@@ -48,7 +48,14 @@ namespace PagoAgilFrba.AbmEmpresa
 
             parametros.add("@nombre", textBoxNombre.Text);
             parametros.add("@cuit", textBoxApellido.Text);
-            parametros.add("@id_rubro", comboBoxRubro.SelectedValue);
+            if (comboBoxRubro.SelectedValue == null) {
+                comboBoxRubro.Text = "";
+                parametros.add("@id_rubro", comboBoxRubro.Text);
+            }
+            else{
+                parametros.add("@id_rubro", comboBoxRubro.SelectedValue.ToString());
+            }
+            
 
 
 

@@ -80,11 +80,23 @@
     <Compile Include="AbmEmpresa\NuevaEmpresa.Designer.cs">
       <DependentUpon>NuevaEmpresa.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmFactura\AbmFactura.cs">
+    <Compile Include="AbmFactura\AdministrarFactura.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmFactura\AbmFactura.Designer.cs">
-      <DependentUpon>AbmFactura.cs</DependentUpon>
+    <Compile Include="AbmFactura\AdministrarFactura.Designer.cs">
+      <DependentUpon>AdministrarFactura.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AbmFactura\NuevaFactura.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AbmFactura\NuevaFactura.Designer.cs">
+      <DependentUpon>NuevaFactura.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AbmFactura\NuevoItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AbmFactura\NuevoItem.Designer.cs">
+      <DependentUpon>NuevoItem.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmRol\AdministrarRoles.cs">
       <SubType>Form</SubType>
@@ -188,8 +200,14 @@
     <EmbeddedResource Include="AbmEmpresa\NuevaEmpresa.resx">
       <DependentUpon>NuevaEmpresa.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AbmFactura\AbmFactura.resx">
-      <DependentUpon>AbmFactura.cs</DependentUpon>
+    <EmbeddedResource Include="AbmFactura\AdministrarFactura.resx">
+      <DependentUpon>AdministrarFactura.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmFactura\NuevaFactura.resx">
+      <DependentUpon>NuevaFactura.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmFactura\NuevoItem.resx">
+      <DependentUpon>NuevoItem.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmRol\AdministrarRoles.resx">
       <DependentUpon>AdministrarRoles.cs</DependentUpon>
