@@ -63,6 +63,16 @@ IF OBJECT_ID('[GRUPO6].Rubro') IS NOT NULL
 
 IF OBJECT_ID('[GRUPO6].Migracion_CLIENTE') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_CLIENTE
+IF OBJECT_ID('[GRUPO6].Migracion_RUBRO') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].Migracion_RUBRO
+IF OBJECT_ID('[GRUPO6].Migracion_SUCURSAL') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].Migracion_SUCURSAL
+IF OBJECT_ID('[GRUPO6].Migracion_EMPRESA') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].Migracion_EMPRESA
+IF OBJECT_ID('[GRUPO6].Migracion_FACTURA') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].Migracion_FACTURA
+IF OBJECT_ID('[GRUPO6].Migracion_ITEM') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].Migracion_ITEM
 IF OBJECT_ID('[GRUPO6].loginProc') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].loginProc
 IF OBJECT_ID('[GRUPO6].obtenerRolesDeUsuario') IS NOT NULL
@@ -312,6 +322,69 @@ CREATE PROCEDURE [GRUPO6].Migracion_CLIENTE
 		UPDATE [GRUPO6].Cliente SET mailCliente=REPLACE(mailCliente, ' ', '')
 	END
 GO
+
+CREATE PROCEDURE [GRUPO6].Migracion_RUBRO
+	AS
+	BEGIN
+		INSERT INTO [GRUPO6].Rubro(descripcionRubro)
+			SELECT DISTINCT Rubro_Descripcion
+			FROM [GD2C2017].[gd_esquema].[Maestra]
+			
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].Migracion_SUCURSAL
+	AS
+	BEGIN
+		INSERT INTO [GRUPO6].Sucursal(nombreSucursal,direccionSucursal,CodigoPostalSucursal,estadoSucursal)
+			SELECT DISTINCT Sucursal_Nombre,Sucursal_Dirección,Sucursal_Codigo_Postal,'Activo'
+			FROM [GD2C2017].[gd_esquema].[Maestra] WHERE Sucursal_Nombre IS NOT NULL
+			
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].Migracion_EMPRESA -- MIGRACION DE EMPRESA MOMENTANEA HASTA ENTENDER BIEN LO DE LAS RENDICIONES
+	AS
+	BEGIN
+		INSERT INTO [GRUPO6].Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,estadoEmpresa,fechaRendicionEmpresa)
+				SELECT DISTINCT Empresa_Nombre, Empresa_Cuit, Empresa_Direccion, Empresa_Rubro,'Activo',
+					CONVERT(datetime ,(SELECT MIN(CONVERT(numeric(18,0),t2.Rendicion_Fecha)) FROM gd_esquema.Maestra t2 WHERE t1.Empresa_Cuit=t2.Empresa_Cuit))
+					FROM [GD2C2017].[gd_esquema].[Maestra] t1 WHERE Empresa_Cuit IS NOT NULL
+			
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].Migracion_FACTURA -- DUDA SOBRE ESTA MIGRACION
+	AS
+	BEGIN
+		INSERT INTO [GRUPO6].Factura(idEmpresa,idCliente,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
+			SELECT DISTINCT (SELECT emp.idEmpresa FROM GRUPO6.Empresa emp WHERE cuitEmpresa=maestra.Empresa_Cuit),
+					(SELECT cli.idCliente FROM GRUPO6.Cliente cli WHERE cli.dniCliente=maestra.[Cliente-Dni]),
+					maestra.Nro_Factura,
+					maestra.Factura_Fecha,
+					dateadd(day,30,maestra.Factura_Fecha_Vencimiento),
+					'Activo',
+					(SELECT SUM(ma.ItemFactura_Monto) FROM gd_esquema.Maestra ma WHERE ma.Pago_Fecha IS NULL AND maestra.Nro_Factura=ma.Nro_Factura GROUP BY Nro_Factura)
+				FROM gd_esquema.Maestra maestra
+				
+			
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].Migracion_ITEM -- DUDA SOBRE ESTA MIGRACION
+	AS
+	BEGIN
+		INSERT INTO [GRUPO6].Item(idFactura,montoItem,cantidadItem)
+			SELECT (SELECT fac.idFactura FROM GRUPO6.Factura fac WHERE maestra.Nro_Factura = fac.numeroFactura),
+			maestra.ItemFactura_Monto,
+			maestra.ItemFactura_Cantidad
+				FROM gd_esquema.Maestra maestra WHERE maestra.Pago_nro IS NULL
+			
+				
+			
+	END
+GO
+
 
 CREATE PROCEDURE [GRUPO6].loginProc
     @usu nvarchar(50), 
@@ -817,12 +890,17 @@ GO
 
 
 
+
 --------------------------------------------------------------
 				--EXECUTE STORE PROCEDURE
 --------------------------------------------------------------
 
 EXEC [GRUPO6].Migracion_CLIENTE
-
+EXEC [GRUPO6].Migracion_RUBRO
+EXEC [GRUPO6].Migracion_SUCURSAL
+EXEC [GRUPO6].Migracion_EMPRESA
+EXEC [GRUPO6].Migracion_FACTURA
+EXEC [GRUPO6].Migracion_ITEM
 --------------------------------------------------------------
 				--INSERTO DATOS
 --------------------------------------------------------------
@@ -861,18 +939,15 @@ INSERT INTO [GRUPO6].Rubro(descripcionRubro)
 				('Institucion escolar')
 -------------------------------------------------------------------------------------------	 
 INSERT INTO GRUPO6.Sucursal(nombreSucursal,direccionSucursal,CodigoPostalSucursal,estadoSucursal)
-		VALUES ('UTN-Medrano','Medrano 951','1111','Activo') ------ INSERT DE PRUEBA, DESPUES SACARLO CUANDO SE MIGRE BIEN TODO
+		VALUES ('UTN-Medrano','Medrano 951','1111','Activo') ------ INSERT DE PRUEBA PARA AGREGAR MAS DATOS
 -------------------------------------------------------------------------------------------	 
 INSERT INTO [GRUPO6].Usuario_Sucursal(idUsuario, idSucursal)
 		VALUES (1,1),(2,1)
 -------------------------------------------------------------------------------------------	 
 INSERT INTO GRUPO6.Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,estadoEmpresa,fechaRendicionEmpresa)
 		VALUES ('Telecentro','1111','Rosas 635','1','Activo','20170808'),
-				('Edesur','2222','Asd 123','3','Activo','20170909'),
-				 ('Empresa N°2000','6-18883376-9','Avenida Juan B. Justo 3768','1','Activo','20170909') ------ INSERT DE PRUEBA, DESPUES SACARLO CUANDO SE MIGRE BIEN TODO
+				('Edesur','2222','Asd 123','3','Activo','20170909')	  ------ INSERT DE PRUEBA PARA AGREGAR MAS DATOS
 -------------------------------------------------------------------------------------------	 
-INSERT INTO GRUPO6.Factura(idEmpresa,idCliente,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
-		VALUES ('3','4','10271','2016-04-09 08:00:00.000','2017-04-10 08:00:00.000','Activo','10053.29') ------ INSERT DE PRUEBA, DESPUES SACARLO CUANDO SE MIGRE BIEN TODO
       
       
       
