@@ -99,6 +99,10 @@ IF OBJECT_ID('[GRUPO6].nuevaSucursal') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevaSucursal
 IF OBJECT_ID('[GRUPO6].modificarSucursal') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].modificarSucursal
+IF OBJECT_ID('[GRUPO6].obtenerEmpresas') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerEmpresas
+IF OBJECT_ID('[GRUPO6].buscarFactura') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].buscarFactura
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -216,7 +220,7 @@ CREATE TABLE [GRUPO6].Factura(
 	estadoFactura VARCHAR(10) NOT NULL DEFAULT 'Activo',
 	totalFactura NUMERIC(18,0) NOT NULL,
 	CONSTRAINT estadoFactura_chk CHECK (estadoFactura = 'Activo' or estadoFactura = 'Inactivo'),
-	CONSTRAINT fechaFactura_chk CHECK (fechaAltaFactura < fechaAltaFactura),
+	CONSTRAINT fechaFactura_chk CHECK (fechaAltaFactura < fechaVencimientoFactura),
 	CONSTRAINT totalFactura_chk CHECK (totalFactura>0)
 );
 GO
@@ -582,16 +586,28 @@ GO
 CREATE PROCEDURE [GRUPO6].buscarEmpresa
 @nombre varchar(255),
 @cuit varchar(50),
-@id_rubro numeric(18,0)
+@id_rubro varchar(50)
 
 AS
 	BEGIN
-		SELECT emp.idEmpresa,emp.idRubro as 'Rubro',emp.nombreEmpresa as 'Nombre', emp.cuitEmpresa as 'Cuit', emp.direccionEmpresa as 'Direccion',emp.fechaRendicionEmpresa as 'Fecha de Rendicion', emp.estadoEmpresa as 'Estado'
-			FROM [GRUPO6].Empresa emp
-			WHERE emp.nombreEmpresa like '%'+@nombre+'%' AND
-			emp.cuitEmpresa like '%'+@cuit+'%' AND
-			emp.idRubro = @id_rubro
 
+		IF @id_rubro = ''
+			BEGIN
+				SELECT emp.idEmpresa,emp.idRubro as 'Rubro',emp.nombreEmpresa as 'Nombre', emp.cuitEmpresa as 'Cuit', emp.direccionEmpresa as 'Direccion',emp.fechaRendicionEmpresa as 'Fecha de Rendicion', emp.estadoEmpresa as 'Estado'
+						FROM [GRUPO6].Empresa emp
+						WHERE emp.nombreEmpresa like '%'+@nombre+'%' AND
+						emp.cuitEmpresa like '%'+@cuit+'%'
+			END
+		ELSE
+			BEGIN
+
+					SELECT emp.idEmpresa,emp.idRubro as 'Rubro',emp.nombreEmpresa as 'Nombre', emp.cuitEmpresa as 'Cuit', emp.direccionEmpresa as 'Direccion',emp.fechaRendicionEmpresa as 'Fecha de Rendicion', emp.estadoEmpresa as 'Estado'
+						FROM [GRUPO6].Empresa emp
+						WHERE emp.nombreEmpresa like '%'+@nombre+'%' AND
+						emp.cuitEmpresa like '%'+@cuit+'%' AND
+						emp.idRubro = CONVERT(numeric(18,0),@id_rubro)
+
+			END
 
 		RETURN
 	END
@@ -609,7 +625,7 @@ CREATE PROCEDURE [GRUPO6].nuevaEmpresa
 @nombre varchar(255),
 @cuit varchar(50),
 @direccion varchar(255),
-@idRubro numeric(18,0),
+@idRubro varchar(50),
 @fecha datetime,
 @estado varchar(10)
 
@@ -638,7 +654,7 @@ CREATE PROCEDURE [GRUPO6].modificarEmpresa
 @nombre varchar(255),
 @cuit varchar(50),
 @direccion varchar(255),
-@idRubro numeric(18,0),
+@idRubro varchar(50),
 @fechaActual datetime,
 @estado varchar(10)
 
@@ -667,7 +683,7 @@ AS
 			SET nombreEmpresa=@nombre,
 				cuitEmpresa=@cuit,
 				direccionEmpresa=@direccion,
-				idRubro=@idRubro,
+				idRubro=CONVERT(numeric(18,0),@idRubro),
 				estadoEmpresa=@estado				
 			WHERE idEmpresa=@id_empresa
 						
@@ -758,6 +774,55 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].obtenerEmpresas
+AS
+	BEGIN
+		SELECT *
+		FROM [GRUPO6].Empresa
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].buscarFactura
+@dni varchar(255),
+@id_empresa varchar(50),
+@nroFactura varchar(255)
+
+AS
+	BEGIN
+
+		IF @id_empresa = ''
+			BEGIN
+				SELECT fac.idFactura,fac.idEmpresa,fac.idCliente,fac.numeroFactura as 'Nro Factura',fac.fechaAltaFactura as 'Fecha de Alta', fac.fechaVencimientoFactura as 'Fecha de Vencimiento',fac.totalFactura as 'Total', fac.estadoFactura as 'Estado'
+					FROM [GRUPO6].Factura fac
+					JOIN GRUPO6.Cliente cli ON cli.idCliente = fac.idCliente  			
+					WHERE cli.dniCliente like '%'+@dni+'%' AND
+					fac.numeroFactura like '%'+@nroFactura+'%'					
+			END
+		ELSE
+			BEGIN
+				SELECT fac.idFactura,fac.idEmpresa,fac.idCliente,fac.numeroFactura as 'Nro Factura',fac.fechaAltaFactura as 'Fecha de Alta', fac.fechaVencimientoFactura as 'Fecha de Vencimiento',fac.totalFactura as 'Total', fac.estadoFactura as 'Estado'
+						FROM [GRUPO6].Factura fac
+						JOIN GRUPO6.Cliente cli ON cli.idCliente = fac.idCliente  			
+						WHERE cli.dniCliente like '%'+@dni+'%' AND
+						fac.numeroFactura like '%'+@nroFactura+'%' AND
+						fac.idEmpresa = CONVERT(numeric(18,0),@id_empresa)	
+			END
+
+			
+
+
+		RETURN
+	END
+GO
+
+
+
+--------------------------------------------------------------
+				--EXECUTE STORE PROCEDURE
+--------------------------------------------------------------
+
+EXEC [GRUPO6].Migracion_CLIENTE
+
 --------------------------------------------------------------
 				--INSERTO DATOS
 --------------------------------------------------------------
@@ -800,7 +865,14 @@ INSERT INTO GRUPO6.Sucursal(nombreSucursal,direccionSucursal,CodigoPostalSucursa
 -------------------------------------------------------------------------------------------	 
 INSERT INTO [GRUPO6].Usuario_Sucursal(idUsuario, idSucursal)
 		VALUES (1,1),(2,1)
-    
+-------------------------------------------------------------------------------------------	 
+INSERT INTO GRUPO6.Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,estadoEmpresa,fechaRendicionEmpresa)
+		VALUES ('Telecentro','1111','Rosas 635','1','Activo','20170808'),
+				('Edesur','2222','Asd 123','3','Activo','20170909'),
+				 ('Empresa N°2000','6-18883376-9','Avenida Juan B. Justo 3768','1','Activo','20170909') ------ INSERT DE PRUEBA, DESPUES SACARLO CUANDO SE MIGRE BIEN TODO
+-------------------------------------------------------------------------------------------	 
+INSERT INTO GRUPO6.Factura(idEmpresa,idCliente,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
+		VALUES ('3','4','10271','2016-04-09 08:00:00.000','2017-04-10 08:00:00.000','Activo','10053.29') ------ INSERT DE PRUEBA, DESPUES SACARLO CUANDO SE MIGRE BIEN TODO
       
       
       
@@ -808,8 +880,4 @@ INSERT INTO [GRUPO6].Usuario_Sucursal(idUsuario, idSucursal)
     
      
 
---------------------------------------------------------------
-				--EXECUTE STORE PROCEDURE
---------------------------------------------------------------
 
-EXEC [GRUPO6].Migracion_CLIENTE
