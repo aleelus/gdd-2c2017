@@ -113,6 +113,11 @@ IF OBJECT_ID('[GRUPO6].obtenerEmpresas') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerEmpresas
 IF OBJECT_ID('[GRUPO6].buscarFactura') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].buscarFactura
+IF OBJECT_ID('[GRUPO6].obtenerSucursalesDeUsuario') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerSucursalesDeUsuario
+IF OBJECT_ID('[GRUPO6].nuevaFactura') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].nuevaFactura
+	
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -238,8 +243,9 @@ GO
 CREATE TABLE [GRUPO6].Item(
 	idItem NUMERIC(18,0) IDENTITY(1,1) PRIMARY KEY,
 	idFactura NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Factura(idFactura),
-	montoItem NUMERIC(18,0) NOT NULL,
+	montoItem NUMERIC(18,2) NOT NULL,
 	cantidadItem NUMERIC(18,0) NOT NULL,
+	nombreItem VARCHAR(255) NULL,
 	CONSTRAINT montoItem_chk CHECK (montoItem>0),
 	CONSTRAINT cantidadItem_chk CHECK (cantidadItem>0)
 );
@@ -376,7 +382,7 @@ CREATE PROCEDURE [GRUPO6].Migracion_ITEM -- DUDA SOBRE ESTA MIGRACION
 	BEGIN
 		INSERT INTO [GRUPO6].Item(idFactura,montoItem,cantidadItem)
 			SELECT (SELECT fac.idFactura FROM GRUPO6.Factura fac WHERE maestra.Nro_Factura = fac.numeroFactura),
-			maestra.ItemFactura_Monto,
+			(maestra.ItemFactura_Monto/maestra.ItemFactura_Cantidad),
 			maestra.ItemFactura_Cantidad
 				FROM gd_esquema.Maestra maestra WHERE maestra.Pago_nro IS NULL
 			
@@ -384,7 +390,6 @@ CREATE PROCEDURE [GRUPO6].Migracion_ITEM -- DUDA SOBRE ESTA MIGRACION
 			
 	END
 GO
-
 
 CREATE PROCEDURE [GRUPO6].loginProc
     @usu nvarchar(50), 
@@ -888,7 +893,107 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].obtenerSucursalesDeUsuario
+@id_usuario numeric(18,0)
+AS
+	BEGIN
+		SELECT usu_suc.idSucursal ,suc.nombreSucursal
+		FROM [GRUPO6].Sucursal suc,[GRUPO6].Usuario_Sucursal usu_suc
+		WHERE usu_suc.idSucursal = suc.idSucursal  AND
+			  suc.estadoSucursal = 'Activo' AND 
+			  usu_suc.idUsuario = @id_usuario
+	END
+GO  
 
+
+CREATE PROCEDURE [GRUPO6].nuevaFactura
+@dni numeric(18,0),
+@id_empresa numeric(18,0),
+@nroFactura numeric(18,0),
+@fechaAlta datetime,
+@fechaVto datetime,
+@listaItems varchar(max),
+@estado varchar(10),
+@total numeric(18,0)
+
+AS
+	BEGIN
+
+		DECLARE @error nvarchar(max)
+		DECLARE @id_cliente numeric(18,0) = (SELECT cli.idCliente FROM GRUPO6.Cliente cli WHERE cli.dniCliente=@dni)
+		
+
+		IF @id_cliente IS NULL
+			BEGIN
+				SET @error = 'No existe un cliente con ese dni, debe ingresar los datos del cliente primero'
+					RAISERROR(@error,16,1)
+					RETURN
+			END
+		ELSE
+			BEGIN 
+
+				IF EXISTS (SELECT fac.numeroFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura=@nroFactura)
+					BEGIN 
+						SET @error = 'Ya existe ese nro de factura, ingrese otra distinta'
+						RAISERROR(@error,16,1)
+						RETURN
+					END
+				ELSE
+					BEGIN
+						
+								--listaItems = "item1,25,1,item2,15,5,......,itemN,montoN,cantidadN,"  VOY AGARRANDO DE a 3 EN EL WHILE
+						BEGIN TRANSACTION agregarNuevaFactura
+
+							INSERT INTO GRUPO6.Factura(idEmpresa,idCliente,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
+									VALUES(@id_empresa,	@id_cliente, @nroFactura,@fechaAlta,@fechaVto,@estado,@total)
+
+							DECLARE @strlist NVARCHAR(max), @pos INT, @delim CHAR, @nombre NVARCHAR(max), @monto numeric(18,2), @cantidad numeric(18,0)
+							SET @strlist = ISNULL(@listaItems,'')
+							SET @delim = ','
+
+
+							
+							WHILE ((len(@strlist) > 0) and (@strlist <> ''))
+								BEGIN
+									SET @pos = charindex(@delim, @strlist)
+        
+									IF @pos > 0
+										BEGIN
+											SET @nombre = substring(@strlist, 1, @pos-1)
+											SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
+											SET @pos = charindex(@delim, @strlist)
+											SET @monto = CONVERT(numeric(18,2),substring(@strlist, 1, @pos-1))
+											SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000))
+											SET @pos = charindex(@delim, @strlist) 
+											IF @pos > 0
+												BEGIN
+													SET @cantidad = CONVERT(numeric(18,0),substring(@strlist, 1, @pos-1)) 
+													SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 						
+												END
+											ELSE
+												BEGIN
+													SET @cantidad = CONVERT(numeric(18,0),@strlist)
+													SET @strlist = ''
+												END
+										END
+									ELSE	
+										BEGIN														
+											SET @strlist = ''
+										END
+
+									INSERT INTO GRUPO6.Item(idFactura,montoItem,cantidadItem,nombreItem)
+												VALUES((SELECT IDENT_CURRENT('GRUPO6.Factura')),@monto,@cantidad,@nombre)
+								END		
+						COMMIT TRANSACTION agregarNuevaFactura
+
+					END
+				
+				
+			END
+		
+		
+	END
+GO
 
 
 --------------------------------------------------------------
@@ -942,13 +1047,13 @@ INSERT INTO GRUPO6.Sucursal(nombreSucursal,direccionSucursal,CodigoPostalSucursa
 		VALUES ('UTN-Medrano','Medrano 951','1111','Activo') ------ INSERT DE PRUEBA PARA AGREGAR MAS DATOS
 -------------------------------------------------------------------------------------------	 
 INSERT INTO [GRUPO6].Usuario_Sucursal(idUsuario, idSucursal)
-		VALUES (1,1),(2,1)
+		VALUES (1,1),(1,2),(2,1)
 -------------------------------------------------------------------------------------------	 
 INSERT INTO GRUPO6.Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,estadoEmpresa,fechaRendicionEmpresa)
 		VALUES ('Telecentro','1111','Rosas 635','1','Activo','20170808'),
 				('Edesur','2222','Asd 123','3','Activo','20170909')	  ------ INSERT DE PRUEBA PARA AGREGAR MAS DATOS
 -------------------------------------------------------------------------------------------	 
-      
+ 
       
       
   
