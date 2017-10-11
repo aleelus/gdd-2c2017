@@ -33,12 +33,12 @@
             this.buttonNuevoCliente = new System.Windows.Forms.Button();
             this.dataGridViewBuscarFactura = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.comboBoxEmpresa = new System.Windows.Forms.ComboBox();
             this.textBoxNroFactura = new System.Windows.Forms.TextBox();
             this.labelNroFactura = new System.Windows.Forms.Label();
             this.labelEmpresa = new System.Windows.Forms.Label();
             this.textBoxDni = new System.Windows.Forms.TextBox();
             this.labelDni = new System.Windows.Forms.Label();
-            this.comboBoxEmpresa = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewBuscarFactura)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -62,6 +62,7 @@
             this.buttonModificarEliminar.TabIndex = 13;
             this.buttonModificarEliminar.Text = "Modificar / Eliminar";
             this.buttonModificarEliminar.UseVisualStyleBackColor = true;
+            this.buttonModificarEliminar.Click += new System.EventHandler(this.buttonModificarEliminar_Click);
             // 
             // buttonNuevoCliente
             // 
@@ -100,6 +101,15 @@
             this.groupBox1.TabIndex = 10;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Buscar Facturas";
+            // 
+            // comboBoxEmpresa
+            // 
+            this.comboBoxEmpresa.FormattingEnabled = true;
+            this.comboBoxEmpresa.Location = new System.Drawing.Point(284, 28);
+            this.comboBoxEmpresa.Name = "comboBoxEmpresa";
+            this.comboBoxEmpresa.Size = new System.Drawing.Size(149, 21);
+            this.comboBoxEmpresa.TabIndex = 7;
+            this.comboBoxEmpresa.SelectionChangeCommitted += new System.EventHandler(this.comboBoxEmpresa_SelectionChangeCommitted);
             // 
             // textBoxNroFactura
             // 
@@ -146,15 +156,6 @@
             this.labelDni.Size = new System.Drawing.Size(31, 15);
             this.labelDni.TabIndex = 0;
             this.labelDni.Text = "DNI";
-            // 
-            // comboBoxEmpresa
-            // 
-            this.comboBoxEmpresa.FormattingEnabled = true;
-            this.comboBoxEmpresa.Location = new System.Drawing.Point(284, 28);
-            this.comboBoxEmpresa.Name = "comboBoxEmpresa";
-            this.comboBoxEmpresa.Size = new System.Drawing.Size(149, 21);
-            this.comboBoxEmpresa.TabIndex = 7;
-            this.comboBoxEmpresa.SelectionChangeCommitted += new System.EventHandler(this.comboBoxEmpresa_SelectionChangeCommitted);
             // 
             // AdministrarFactura
             // 

@@ -33,7 +33,7 @@ namespace PagoAgilFrba.Login
                 Sesion.user_id = Convert.ToDecimal(DTUsuario.Rows[0][0]);                
                 Sesion.usuario = textBoxUsuario.Text;
 
-                new SeleccionarRol().Show(this);
+                new SeleccionarSucursal().Show(this);
                 this.Hide();
             }
         }

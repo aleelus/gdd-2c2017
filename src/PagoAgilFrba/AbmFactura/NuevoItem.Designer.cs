@@ -28,16 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.textBoxNombre = new System.Windows.Forms.TextBox();
+            this.labelNombre = new System.Windows.Forms.Label();
+            this.textBoxCantidad = new System.Windows.Forms.TextBox();
+            this.labelCantidad = new System.Windows.Forms.Label();
             this.textBoxMonto = new System.Windows.Forms.TextBox();
             this.labelMonto = new System.Windows.Forms.Label();
             this.buttonCancelar = new System.Windows.Forms.Button();
             this.buttonAgregar = new System.Windows.Forms.Button();
-            this.textBoxCantidad = new System.Windows.Forms.TextBox();
-            this.labelCantidad = new System.Windows.Forms.Label();
-            this.textBoxNombre = new System.Windows.Forms.TextBox();
-            this.labelNombre = new System.Windows.Forms.Label();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -55,6 +58,42 @@
             this.groupBox1.TabIndex = 31;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Datos del Item";
+            // 
+            // textBoxNombre
+            // 
+            this.textBoxNombre.Location = new System.Drawing.Point(74, 24);
+            this.textBoxNombre.Name = "textBoxNombre";
+            this.textBoxNombre.Size = new System.Drawing.Size(149, 21);
+            this.textBoxNombre.TabIndex = 8;
+            // 
+            // labelNombre
+            // 
+            this.labelNombre.AutoSize = true;
+            this.labelNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNombre.Location = new System.Drawing.Point(12, 27);
+            this.labelNombre.Name = "labelNombre";
+            this.labelNombre.Size = new System.Drawing.Size(58, 15);
+            this.labelNombre.TabIndex = 7;
+            this.labelNombre.Text = "Nombre";
+            this.labelNombre.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // textBoxCantidad
+            // 
+            this.textBoxCantidad.Location = new System.Drawing.Point(74, 78);
+            this.textBoxCantidad.Name = "textBoxCantidad";
+            this.textBoxCantidad.Size = new System.Drawing.Size(149, 21);
+            this.textBoxCantidad.TabIndex = 6;
+            // 
+            // labelCantidad
+            // 
+            this.labelCantidad.AutoSize = true;
+            this.labelCantidad.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCantidad.Location = new System.Drawing.Point(6, 81);
+            this.labelCantidad.Name = "labelCantidad";
+            this.labelCantidad.Size = new System.Drawing.Size(64, 15);
+            this.labelCantidad.TabIndex = 5;
+            this.labelCantidad.Text = "Cantidad";
+            this.labelCantidad.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // textBoxMonto
             // 
@@ -83,6 +122,7 @@
             this.buttonCancelar.TabIndex = 33;
             this.buttonCancelar.Text = "Cancelar";
             this.buttonCancelar.UseVisualStyleBackColor = true;
+            this.buttonCancelar.Click += new System.EventHandler(this.buttonCancelar_Click);
             // 
             // buttonAgregar
             // 
@@ -93,42 +133,11 @@
             this.buttonAgregar.TabIndex = 32;
             this.buttonAgregar.Text = "Agregar";
             this.buttonAgregar.UseVisualStyleBackColor = true;
+            this.buttonAgregar.Click += new System.EventHandler(this.buttonAgregar_Click);
             // 
-            // textBoxCantidad
+            // errorProvider1
             // 
-            this.textBoxCantidad.Location = new System.Drawing.Point(74, 78);
-            this.textBoxCantidad.Name = "textBoxCantidad";
-            this.textBoxCantidad.Size = new System.Drawing.Size(149, 21);
-            this.textBoxCantidad.TabIndex = 6;
-            // 
-            // labelCantidad
-            // 
-            this.labelCantidad.AutoSize = true;
-            this.labelCantidad.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelCantidad.Location = new System.Drawing.Point(6, 81);
-            this.labelCantidad.Name = "labelCantidad";
-            this.labelCantidad.Size = new System.Drawing.Size(64, 15);
-            this.labelCantidad.TabIndex = 5;
-            this.labelCantidad.Text = "Cantidad";
-            this.labelCantidad.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // textBoxNombre
-            // 
-            this.textBoxNombre.Location = new System.Drawing.Point(74, 24);
-            this.textBoxNombre.Name = "textBoxNombre";
-            this.textBoxNombre.Size = new System.Drawing.Size(149, 21);
-            this.textBoxNombre.TabIndex = 8;
-            // 
-            // labelNombre
-            // 
-            this.labelNombre.AutoSize = true;
-            this.labelNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Underline))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelNombre.Location = new System.Drawing.Point(12, 27);
-            this.labelNombre.Name = "labelNombre";
-            this.labelNombre.Size = new System.Drawing.Size(58, 15);
-            this.labelNombre.TabIndex = 7;
-            this.labelNombre.Text = "Nombre";
-            this.labelNombre.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.errorProvider1.ContainerControl = this;
             // 
             // NuevoItem
             // 
@@ -145,6 +154,7 @@
             this.Text = "Nuevo Item";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -160,5 +170,6 @@
         private System.Windows.Forms.Label labelCantidad;
         private System.Windows.Forms.TextBox textBoxNombre;
         private System.Windows.Forms.Label labelNombre;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

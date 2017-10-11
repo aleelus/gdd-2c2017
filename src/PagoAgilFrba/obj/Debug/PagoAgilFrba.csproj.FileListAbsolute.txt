@@ -34,3 +34,6 @@ E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilF
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmFactura.AdministrarFactura.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmFactura.NuevaFactura.resources
 E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmFactura.NuevoItem.resources
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.Login.SeleccionarSucursal.resources
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.AbmFactura.ModificarEliminarFactura.resources
+E:\UTN\Gestion de Datos\TP2C2017\GDD-2C2017\src\PagoAgilFrba\obj\Debug\PagoAgilFrba.Form1.resources

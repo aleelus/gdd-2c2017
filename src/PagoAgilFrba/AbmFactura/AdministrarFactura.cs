@@ -100,6 +100,11 @@ namespace PagoAgilFrba.AbmFactura
             this.Hide();
         }
 
+        private void buttonModificarEliminar_Click(object sender, EventArgs e)
+        {
+
+        }
+
        
     }
 }

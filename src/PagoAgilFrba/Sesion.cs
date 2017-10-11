@@ -16,6 +16,7 @@ namespace PagoAgilFrba
         public static string rol_nombre;
         public static decimal user_id;
         public static string usuario;
-        
+        public static decimal sucursal_id;
+        public static string sucursal_nombre;
     }
 }

@@ -38,11 +38,11 @@ namespace PagoAgilFrba.Login
 
         private void SeleccionarRol_Shown(Object sender, EventArgs e)
         {
-           /* if (comboBoxRoles.Items.Count == 1)
+           if (comboBoxRoles.Items.Count == 1)
             {
                 this.Hide();
                 buttonSeleccionar_Click(null, null);
-            }*/
+            }
         }
 
 
