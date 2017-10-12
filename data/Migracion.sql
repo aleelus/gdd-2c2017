@@ -117,6 +117,10 @@ IF OBJECT_ID('[GRUPO6].obtenerSucursalesDeUsuario') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerSucursalesDeUsuario
 IF OBJECT_ID('[GRUPO6].nuevaFactura') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevaFactura
+IF OBJECT_ID('[GRUPO6].obtenerItemsDeFactura') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerItemsDeFactura
+	IF OBJECT_ID('[GRUPO6].modificarFactura') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].modificarFactura
 	
 --------------------------------------------------------------
 				--Drop Schema
@@ -870,7 +874,7 @@ AS
 
 		IF @id_empresa = ''
 			BEGIN
-				SELECT fac.idFactura,fac.idEmpresa,fac.idCliente,fac.numeroFactura as 'Nro Factura',fac.fechaAltaFactura as 'Fecha de Alta', fac.fechaVencimientoFactura as 'Fecha de Vencimiento',fac.totalFactura as 'Total', fac.estadoFactura as 'Estado'
+				SELECT fac.idFactura,fac.idEmpresa,fac.idCliente,cli.dniCliente as 'Dni', fac.numeroFactura as 'Nro Factura',fac.fechaAltaFactura as 'Fecha de Alta', fac.fechaVencimientoFactura as 'Fecha de Vencimiento',fac.totalFactura as 'Total', fac.estadoFactura as 'Estado'
 					FROM [GRUPO6].Factura fac
 					JOIN GRUPO6.Cliente cli ON cli.idCliente = fac.idCliente  			
 					WHERE cli.dniCliente like '%'+@dni+'%' AND
@@ -878,7 +882,7 @@ AS
 			END
 		ELSE
 			BEGIN
-				SELECT fac.idFactura,fac.idEmpresa,fac.idCliente,fac.numeroFactura as 'Nro Factura',fac.fechaAltaFactura as 'Fecha de Alta', fac.fechaVencimientoFactura as 'Fecha de Vencimiento',fac.totalFactura as 'Total', fac.estadoFactura as 'Estado'
+				SELECT fac.idFactura,fac.idEmpresa,fac.idCliente,cli.dniCliente as 'Dni', fac.numeroFactura as 'Nro Factura',fac.fechaAltaFactura as 'Fecha de Alta', fac.fechaVencimientoFactura as 'Fecha de Vencimiento',fac.totalFactura as 'Total', fac.estadoFactura as 'Estado'
 						FROM [GRUPO6].Factura fac
 						JOIN GRUPO6.Cliente cli ON cli.idCliente = fac.idCliente  			
 						WHERE cli.dniCliente like '%'+@dni+'%' AND
@@ -904,7 +908,6 @@ AS
 			  usu_suc.idUsuario = @id_usuario
 	END
 GO  
-
 
 CREATE PROCEDURE [GRUPO6].nuevaFactura
 @dni numeric(18,0),
@@ -962,7 +965,7 @@ AS
 											SET @nombre = substring(@strlist, 1, @pos-1)
 											SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
 											SET @pos = charindex(@delim, @strlist)
-											SET @monto = CONVERT(numeric(18,2),substring(@strlist, 1, @pos-1))
+											SET @monto = (SELECT TRY_PARSE(substring(@strlist, 1, @pos-1) as numeric(18,2) using 'es-ES'))	
 											SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000))
 											SET @pos = charindex(@delim, @strlist) 
 											IF @pos > 0
@@ -985,6 +988,121 @@ AS
 												VALUES((SELECT IDENT_CURRENT('GRUPO6.Factura')),@monto,@cantidad,@nombre)
 								END		
 						COMMIT TRANSACTION agregarNuevaFactura
+
+					END
+				
+				
+			END
+		
+		
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].obtenerItemsDeFactura
+@id_factura numeric(18,0)
+
+AS
+	BEGIN
+		SELECT idItem,nombreItem as 'Nombre', montoItem as 'Monto', cantidadItem as 'Cantidad'
+		FROM [GRUPO6].Item
+		WHERE idFactura = @id_factura
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].modificarFactura
+@dni numeric(18,0),
+@id_empresa numeric(18,0),
+@nroFactura numeric(18,0),
+@fechaAlta datetime,
+@fechaVto datetime,
+@listaItems varchar(max),
+@estado varchar(10),
+@total numeric(18,0)
+
+AS
+	BEGIN
+
+		DECLARE @error nvarchar(max)
+		DECLARE @id_cliente numeric(18,0) = (SELECT cli.idCliente FROM GRUPO6.Cliente cli WHERE cli.dniCliente=@dni)
+		
+
+		IF @id_cliente IS NULL
+			BEGIN
+				SET @error = 'No existe un cliente con ese dni, debe ingresar los datos del cliente primero'
+					RAISERROR(@error,16,1)
+					RETURN
+			END
+		ELSE
+			BEGIN 
+				
+				DECLARE @id_factura numeric(18,0) = (SELECT fac.idFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura=@nroFactura)
+
+				IF @id_factura IS NULL
+					BEGIN 
+						SET @error = 'Factura inexistente'
+						RAISERROR(@error,16,1)
+						RETURN
+					END
+				ELSE
+					BEGIN
+
+								--listaItems = "item1*25*1*item2*15*5*......*itemN*montoN*cantidadN*"  VOY AGARRANDO DE a 3 EN EL WHILE
+						BEGIN TRANSACTION modificarFacturaItems
+
+							DELETE FROM [GRUPO6].Item
+									FROM [GRUPO6].Item ite									
+									WHERE ite.idFactura = @id_factura
+											
+						
+
+							UPDATE GRUPO6.Factura SET 
+									idEmpresa=@id_empresa,
+									idCliente=@id_cliente,
+									numeroFactura=@nroFactura,
+									fechaAltaFactura=@fechaAlta,
+									fechaVencimientoFactura=@fechaVto,
+									estadoFactura=@estado,
+									totalFactura=@total
+									WHERE idFactura = @id_factura
+
+							DECLARE @strlist NVARCHAR(max), @pos INT, @delim CHAR, @nombre NVARCHAR(max), @monto numeric(18,2), @cantidad numeric(18,0)
+							SET @strlist = ISNULL(@listaItems,'')
+							SET @delim = '*'
+
+
+							
+							WHILE ((len(@strlist) > 0) and (@strlist <> ''))
+								BEGIN
+									SET @pos = charindex(@delim, @strlist)
+        
+									IF @pos > 0
+										BEGIN
+											SET @nombre = substring(@strlist, 1, @pos-1)
+											SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
+											SET @pos = charindex(@delim, @strlist)
+											SET @monto = (SELECT TRY_PARSE(substring(@strlist, 1, @pos-1) as numeric(18,2) using 'es-ES'))											
+											SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000))
+											SET @pos = charindex(@delim, @strlist) 
+											IF @pos > 0
+												BEGIN
+													SET @cantidad = CONVERT(numeric(18,0),substring(@strlist, 1, @pos-1)) 
+													SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 						
+												END
+											ELSE
+												BEGIN
+													SET @cantidad = CONVERT(numeric(18,0),@strlist)
+													SET @strlist = ''
+												END
+										END
+									ELSE	
+										BEGIN														
+											SET @strlist = ''
+										END
+
+									INSERT INTO GRUPO6.Item(idFactura,montoItem,cantidadItem,nombreItem)
+												VALUES(@id_factura,@monto,@cantidad,@nombre)
+								END		
+						COMMIT TRANSACTION modificarFacturaItems
 
 					END
 				
