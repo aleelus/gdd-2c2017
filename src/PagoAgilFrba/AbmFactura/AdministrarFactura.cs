@@ -13,6 +13,9 @@ namespace PagoAgilFrba.AbmFactura
 {
     public partial class AdministrarFactura : Form
     {
+
+        private bool salir = true;
+
         public AdministrarFactura()
         {
             InitializeComponent();
@@ -101,8 +104,38 @@ namespace PagoAgilFrba.AbmFactura
         }
 
         private void buttonModificarEliminar_Click(object sender, EventArgs e)
-        {
+        {                       
 
+            salir = false;
+            Form nuevoForm = null;
+            
+            DataGridViewCellCollection cell;
+            if (dataGridViewBuscarFactura.SelectedRows.Count > 0)
+            {
+
+                // CONTROLAR ACA SI SE PUEDE MODIFICAR LA FACTURA
+                // SOLO SE PUEDE MODIFICAR SI NO SE PAGARON Y/O RENDIDA
+                // CON Convert.ToDecimal(cell["idFactura"].Value) HAGO UN JOIN A LA
+                // TABLA DE PAGOS Y TABLA RENDICIONES Y VERIFICO
+
+                cell = dataGridViewBuscarFactura.SelectedRows[0].Cells;
+                nuevoForm = new AbmFactura.ModificarEliminarFactura();
+                ModificarEliminarFactura nuevo = (ModificarEliminarFactura)nuevoForm;
+                nuevo.recibirDatos(cell);
+                nuevo.Show(this);
+                dataGridViewBuscarFactura.DataSource = null;
+                this.Hide();
+            }
+            else
+                MessageBox.Show("Debe seleccionar una fila antes");
+
+        }
+
+        private void buttonVolver_Click(object sender, EventArgs e)
+        {
+            salir = false;
+            Owner.Show();
+            this.Close();
         }
 
        

@@ -14,6 +14,8 @@ namespace PagoAgilFrba.AbmFactura
     {
 
         Form nuevaFac = new NuevaFactura();
+        Form modFac = new ModificarEliminarFactura();
+        public int estado = 0 ; // 1 = nuevaFactura : 2 = ModificarEliminarFactura
 
         public NuevoItem()
         {
@@ -31,7 +33,7 @@ namespace PagoAgilFrba.AbmFactura
                 errorProvider1.SetError(textBoxNombre, "Nombre no válido");
                 correcto = false;
             }
-            if (!Validaciones.validarSoloNumeros(textBoxMonto.Text))
+            if (!Validaciones.validarMonto(textBoxMonto.Text))
             {
                 errorProvider1.SetError(textBoxMonto, "Monto no válido");
                 correcto = false;
@@ -49,9 +51,11 @@ namespace PagoAgilFrba.AbmFactura
             return correcto;
         }
 
-        public void enviarFormItem(NuevaFactura nuevaFacturaForm)
+        public void enviarFormItem(NuevaFactura nuevaFacturaForm,ModificarEliminarFactura modFacturaForm, int est)
         {
-            nuevaFac = nuevaFacturaForm;         
+            nuevaFac = nuevaFacturaForm;
+            modFac = modFacturaForm;
+            estado = est;
         }
 
         private void buttonAgregar_Click(object sender, EventArgs e)
@@ -59,10 +63,21 @@ namespace PagoAgilFrba.AbmFactura
             if (validar())
             {
 
-                salir = false;                
+                salir = false; 
+               
                 Item nuevoItem = new Item(textBoxNombre.Text, Convert.ToDecimal(textBoxMonto.Text), Convert.ToInt16(textBoxCantidad.Text));
-                NuevaFactura nuevo = (NuevaFactura)nuevaFac;
-                nuevo.recibirItems(nuevoItem);
+                
+                if(estado == 1){
+                    NuevaFactura nuevo = (NuevaFactura)nuevaFac;
+                    nuevo.recibirItems(nuevoItem);
+                }
+                else if (estado == 2)
+                {
+                    ModificarEliminarFactura nuevo = (ModificarEliminarFactura)modFac;
+                    nuevo.recibirItems(nuevoItem);
+                }
+
+                
                 this.Close();
 
             }

@@ -7,9 +7,11 @@ using System.Text.RegularExpressions;
 
 namespace PagoAgilFrba
 {
+    
     public static class Validaciones
     {
         static Regex regexSoloNumeros = new Regex(@"^[0-9]+$");
+        static Regex regexSoloNumerosYComa = new Regex(@"^[0-9]+([,][0-9]{1,3})?$");
         static Regex regexSoloLetras = new Regex(@"^[a-zA-ZáéíóúÁÉÍÓÚ]+$");
         static Regex regexMail = new Regex(@"^[-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4}$");
         static Regex regexSolofrases = new Regex(@"^[a-zA-ZáéíóúÁÉÍÓÚ ]+$");
@@ -21,6 +23,10 @@ namespace PagoAgilFrba
         public static bool validarSoloNumeros(string numero)
         {
             return regexSoloNumeros.IsMatch(numero);
+        }
+        public static bool validarMonto(string numero)
+        {
+            return regexSoloNumerosYComa.IsMatch(numero);
         }
 
         public static bool validarSoloLetras(string nombre)

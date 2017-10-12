@@ -47,7 +47,7 @@ namespace PagoAgilFrba.AbmFactura
         {
             Form nuevoForm = new AbmFactura.NuevoItem();
             NuevoItem nueva = (NuevoItem)nuevoForm;
-            nueva.enviarFormItem(this);
+            nueva.enviarFormItem(this,null,1);
             nuevoForm.Show(this);           
         }
 
