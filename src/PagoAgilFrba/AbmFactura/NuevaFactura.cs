@@ -102,7 +102,7 @@ namespace PagoAgilFrba.AbmFactura
 
                 foreach (DataGridViewRow r in dataGridViewItems.Rows)
                 {
-                    listaItems = listaItems + r.Cells["Nombre"].Value + "," + r.Cells["Monto"].Value + "," + r.Cells["Cantidad"].Value + ",";
+                    listaItems = listaItems + r.Cells["Nombre"].Value + "*" + r.Cells["Monto"].Value + "*" + r.Cells["Cantidad"].Value + "*";
                 }
 
                 parametros.add("@dni", Convert.ToDecimal(textBoxDni.Text));

@@ -944,7 +944,7 @@ AS
 				ELSE
 					BEGIN
 						
-								--listaItems = "item1,25,1,item2,15,5,......,itemN,montoN,cantidadN,"  VOY AGARRANDO DE a 3 EN EL WHILE
+								
 						BEGIN TRANSACTION agregarNuevaFactura
 
 							INSERT INTO GRUPO6.Factura(idEmpresa,idCliente,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
@@ -952,7 +952,7 @@ AS
 
 							DECLARE @strlist NVARCHAR(max), @pos INT, @delim CHAR, @nombre NVARCHAR(max), @monto numeric(18,2), @cantidad numeric(18,0)
 							SET @strlist = ISNULL(@listaItems,'')
-							SET @delim = ','
+							SET @delim = '*'
 
 
 							
