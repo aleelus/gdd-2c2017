@@ -34,12 +34,17 @@ namespace PagoAgilFrba.Login
 
                 Shown += SeleccionarRol_Shown;
             }
+                        
         }
 
         private void SeleccionarRol_Shown(Object sender, EventArgs e)
         {
+
+
            if (comboBoxRoles.Items.Count == 1)
             {
+                Sesion.rol_nombre = ((DataRowView)(comboBoxRoles.SelectedItem)).Row.ItemArray[1].ToString();
+                Sesion.rol_id = Convert.ToInt32(comboBoxRoles.SelectedValue);
                 this.Hide();
                 buttonSeleccionar_Click(null, null);
             }
@@ -55,11 +60,15 @@ namespace PagoAgilFrba.Login
 
         private void buttonSeleccionar_Click(object sender, EventArgs e)
         {
-            Sesion.rol_nombre = comboBoxRoles.SelectedText;
-            Sesion.rol_id = Convert.ToInt32(comboBoxRoles.SelectedValue);
 
-            new SeleccionarFuncionalidad().Show(this);
-            this.Hide();
+            if (comboBoxRoles.SelectedIndex > -1) {
+
+                Sesion.rol_nombre = ((DataRowView)(comboBoxRoles.SelectedItem)).Row.ItemArray[1].ToString();
+                Sesion.rol_id = Convert.ToInt32(comboBoxRoles.SelectedValue);
+                new SeleccionarFuncionalidad().Show(this);
+                this.Hide();
+            }
+            
         }
 
         private void SeleccionarRol_FormClosing(object sender, FormClosingEventArgs e)
@@ -69,5 +78,6 @@ namespace PagoAgilFrba.Login
                 Application.Exit();
             }
         }
+               
     }
 }

@@ -74,6 +74,11 @@ namespace PagoAgilFrba.AbmFactura
                 errorProvider1.SetError(textBoxNroFactura, "Por favor Agregue Items");
                 correcto = false;
             }
+            if (comboBoxEmpresa.SelectedIndex < 0)
+            {
+                errorProvider1.SetError(comboBoxEmpresa, "Elija una empresa");
+                correcto = false;
+            }
  
             return correcto;
         }

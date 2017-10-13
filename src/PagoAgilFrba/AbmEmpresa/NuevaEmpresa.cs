@@ -32,6 +32,8 @@ namespace PagoAgilFrba.AbmEmpresa
                 comboBoxRubro.Update();
 
             }
+
+            comboBoxRubro.SelectedIndex = -1;
         }
 
         private bool validar()
@@ -51,6 +53,11 @@ namespace PagoAgilFrba.AbmEmpresa
             if (!Validaciones.ValidarDireccion(textBoxDireccion.Text))
             {
                 errorProvider1.SetError(textBoxDireccion, "Direccion no válida");
+                correcto = false;
+            }
+            if (comboBoxRubro.SelectedIndex < 0)
+            {
+                errorProvider1.SetError(comboBoxRubro, "Elija un rubro");
                 correcto = false;
             }
 

@@ -51,6 +51,7 @@
             this.comboBoxRoles.Name = "comboBoxRoles";
             this.comboBoxRoles.Size = new System.Drawing.Size(295, 21);
             this.comboBoxRoles.TabIndex = 1;
+
             // 
             // buttonSeleccionar
             // 

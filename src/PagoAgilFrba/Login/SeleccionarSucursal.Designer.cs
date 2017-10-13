@@ -63,6 +63,7 @@
             this.comboBoxSucursales.Name = "comboBoxSucursales";
             this.comboBoxSucursales.Size = new System.Drawing.Size(261, 21);
             this.comboBoxSucursales.TabIndex = 8;
+
             // 
             // labelSucursal
             // 

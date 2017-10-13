@@ -90,7 +90,7 @@ namespace PagoAgilFrba.Login
                     nuevoForm = new AbmFactura.AdministrarFactura();
                     break;
                 case "Registro de Pagos de Facturas":
-                    nuevoForm = new AbmFactura.AdministrarFactura();
+                    nuevoForm = new RegistroPago.RegistrarPago();
                     break;
                 case "Rendicion de Facturas Cobradas":
                     nuevoForm = new AbmFactura.AdministrarFactura();
