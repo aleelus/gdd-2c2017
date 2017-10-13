@@ -73,6 +73,8 @@ IF OBJECT_ID('[GRUPO6].Migracion_FACTURA') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_FACTURA
 IF OBJECT_ID('[GRUPO6].Migracion_ITEM') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_ITEM
+IF OBJECT_ID('[GRUPO6].Migracion_REGISTRO_PAGO') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].Migracion_REGISTRO_PAGO
 IF OBJECT_ID('[GRUPO6].loginProc') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].loginProc
 IF OBJECT_ID('[GRUPO6].obtenerRolesDeUsuario') IS NOT NULL
@@ -119,8 +121,16 @@ IF OBJECT_ID('[GRUPO6].nuevaFactura') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevaFactura
 IF OBJECT_ID('[GRUPO6].obtenerItemsDeFactura') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerItemsDeFactura
-	IF OBJECT_ID('[GRUPO6].modificarFactura') IS NOT NULL
+IF OBJECT_ID('[GRUPO6].modificarFactura') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].modificarFactura
+IF OBJECT_ID('[GRUPO6].buscarClientesDeEmpresas') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].buscarClientesDeEmpresas
+IF OBJECT_ID('[GRUPO6].buscarFacturasDeClientes') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].buscarFacturasDeClientes
+IF OBJECT_ID('[GRUPO6].buscarDatosDeFactura') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].buscarDatosDeFactura
+IF OBJECT_ID('[GRUPO6].nuevoPago') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].nuevoPago
 	
 --------------------------------------------------------------
 				--Drop Schema
@@ -394,6 +404,24 @@ CREATE PROCEDURE [GRUPO6].Migracion_ITEM -- DUDA SOBRE ESTA MIGRACION
 			
 	END
 GO
+
+CREATE PROCEDURE [GRUPO6].Migracion_REGISTRO_PAGO
+	AS
+	BEGIN
+		INSERT INTO [GRUPO6].RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,formaPagoRegistroPago)
+			SELECT DISTINCT maestra.Nro_Factura,
+					(SELECT suc.idSucursal FROM GRUPO6.Sucursal suc WHERE suc.CodigoPostalSucursal = maestra.Sucursal_Codigo_Postal),
+					maestra.Pago_nro,
+					maestra.Pago_Fecha,
+					(SELECT fac.fechaVencimientoFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura = maestra.Nro_Factura),
+					(SELECT fac.totalFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura = maestra.Nro_Factura),
+					maestra.FormaPagoDescripcion
+				FROM gd_esquema.Maestra maestra WHERE maestra.Pago_nro IS NOT NULL
+				
+			
+	END
+GO
+
 
 CREATE PROCEDURE [GRUPO6].loginProc
     @usu nvarchar(50), 
@@ -1113,6 +1141,77 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].buscarClientesDeEmpresas
+@id_empresa numeric(18,0)
+
+AS
+	BEGIN
+		SELECT DISTINCT cli.idCliente, CONCAT(cli.nombreCliente,' ',cli.apellidoCliente,' :',cli.dniCliente) as 'Datos' FROM GRUPO6.Factura fac
+			JOIN GRUPO6.Cliente cli ON cli.idCliente=fac.idCliente
+			WHERE idEmpresa=@id_empresa
+		RETURN
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].buscarFacturasDeClientes
+@id_cliente numeric(18,0)
+
+AS
+	BEGIN
+		SELECT fac.idFactura, fac.numeroFactura  FROM GRUPO6.Factura fac
+			WHERE idCliente=@id_cliente
+		RETURN
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].buscarDatosDeFactura
+@id_factura numeric(18,0)
+
+AS
+	BEGIN
+		SELECT fac.totalFactura as 'Importe', fac.fechaVencimientoFactura as 'Fecha Vto'FROM GRUPO6.Factura fac
+				WHERE fac.idFactura=@id_factura
+		RETURN
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].nuevoPago
+@nro_factura numeric(18,0),
+@id_sucursal numeric(18,0),
+@fecha_cobro datetime,
+@fecha_vto datetime,
+@importe numeric(18,0),
+@forma_pago varchar(255)
+
+AS
+	BEGIN
+		DECLARE @error nvarchar(max)
+
+		IF EXISTS (SELECT 1 FROM GRUPO6.RegistroPago WHERE numeroFactura = @nro_factura)
+			BEGIN
+				SET @error = 'La factura '+CONVERT(nvarchar(255),@nro_factura)+' ya fue pagada'
+					RAISERROR(@error,16,1)
+					RETURN
+			END
+		ELSE
+			BEGIN
+
+				BEGIN TRANSACTION efectuarNuevoPago
+		
+					DECLARE @nro_pago numeric(18,0) = (SELECT TOP 1 numeroPagoRegistroPago FROM GRUPO6.RegistroPago ORDER BY numeroPagoRegistroPago DESC)
+
+					SET @nro_pago = @nro_pago + 1
+
+					INSERT INTO GRUPO6.RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,formaPagoRegistroPago)
+							VALUES(@nro_factura,@id_sucursal,@nro_pago,@fecha_cobro,@fecha_vto,@importe,@forma_pago)
+		
+				COMMIT TRANSACTION efectuarNuevoPago
+
+			END
+		
+	END
+GO
+
 
 --------------------------------------------------------------
 				--EXECUTE STORE PROCEDURE
@@ -1124,6 +1223,7 @@ EXEC [GRUPO6].Migracion_SUCURSAL
 EXEC [GRUPO6].Migracion_EMPRESA
 EXEC [GRUPO6].Migracion_FACTURA
 EXEC [GRUPO6].Migracion_ITEM
+EXEC [GRUPO6].Migracion_REGISTRO_PAGO
 --------------------------------------------------------------
 				--INSERTO DATOS
 --------------------------------------------------------------
@@ -1137,7 +1237,7 @@ INSERT INTO [GRUPO6].Funcionalidad(nombreFuncionalidad)
 				('ABM Empresa'),
 				('ABM Sucursal'),
 				('ABM Facturas'),
-				('Registro de Pago de Facturas'),
+				('Registro de Pagos de Facturas'),
 				('Rendicion de Facturas Cobradas'),
 				('Devoluciones'),			
 				('Listado Estadistico')
