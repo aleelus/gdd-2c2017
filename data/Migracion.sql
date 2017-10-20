@@ -57,6 +57,9 @@ IF OBJECT_ID('[GRUPO6].Empresa') IS NOT NULL
 IF OBJECT_ID('[GRUPO6].Rubro') IS NOT NULL
 	DROP TABLE [GRUPO6].Rubro
 
+IF OBJECT_ID('[GRUPO6].FormaPago') IS NOT NULL
+	DROP TABLE [GRUPO6].FormaPago
+
 --------------------------------------------------------------
 				--DELETE STORE PROCEDURE
 --------------------------------------------------------------
@@ -131,6 +134,8 @@ IF OBJECT_ID('[GRUPO6].buscarDatosDeFactura') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].buscarDatosDeFactura
 IF OBJECT_ID('[GRUPO6].nuevoPago') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevoPago
+IF OBJECT_ID('[GRUPO6].obtenerFormasDePago') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerFormasDePago
 	
 --------------------------------------------------------------
 				--Drop Schema
@@ -314,11 +319,17 @@ CREATE TABLE [GRUPO6].RegistroPago(
 	fechaCobroRegistroPago DATETIME NOT NULL,
 	fechaVencimientoRegistroPago DATETIME NOT NULL,
 	importeRegistroPago NUMERIC(18,0) NOT NULL,
-	formaPagoRegistroPago VARCHAR(255) NOT NULL,
+	idFormaPago NUMERIC(18,0) NOT NULL,
 	CONSTRAINT importeRegistroPago_chk CHECK (importeRegistroPago>0)
 );
 GO
 
+CREATE TABLE [GRUPO6].FormaPago(
+	idFormaPago NUMERIC(18,0) IDENTITY(1,1) PRIMARY KEY,
+	descripcionFormaPago VARCHAR(255) NOT NULL,
+	
+);
+GO
 --------------------------------------------------------------
 				--CREATE STORE PROCEDURE
 --------------------------------------------------------------
@@ -408,20 +419,27 @@ GO
 CREATE PROCEDURE [GRUPO6].Migracion_REGISTRO_PAGO
 	AS
 	BEGIN
-		INSERT INTO [GRUPO6].RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,formaPagoRegistroPago)
+
+		INSERT INTO [GRUPO6].FormaPago(descripcionFormaPago)
+		VALUES	('Efectivo'),
+				('Tarjeta de Crédito'),
+				('Tarjeta de Débito'),
+				('Cheque')
+ 
+
+		INSERT INTO [GRUPO6].RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,idFormaPago)
 			SELECT DISTINCT maestra.Nro_Factura,
 					(SELECT suc.idSucursal FROM GRUPO6.Sucursal suc WHERE suc.CodigoPostalSucursal = maestra.Sucursal_Codigo_Postal),
 					maestra.Pago_nro,
 					maestra.Pago_Fecha,
 					(SELECT fac.fechaVencimientoFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura = maestra.Nro_Factura),
 					(SELECT fac.totalFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura = maestra.Nro_Factura),
-					maestra.FormaPagoDescripcion
+					(SELECT forma.idFormaPago FROM GRUPO6.FormaPago forma WHERE forma.descripcionFormaPago = maestra.FormaPagoDescripcion)					
 				FROM gd_esquema.Maestra maestra WHERE maestra.Pago_nro IS NOT NULL
 				
 			
 	END
 GO
-
 
 CREATE PROCEDURE [GRUPO6].loginProc
     @usu nvarchar(50), 
@@ -1199,16 +1217,27 @@ AS
 				BEGIN TRANSACTION efectuarNuevoPago
 		
 					DECLARE @nro_pago numeric(18,0) = (SELECT TOP 1 numeroPagoRegistroPago FROM GRUPO6.RegistroPago ORDER BY numeroPagoRegistroPago DESC)
+					DECLARE @id_formaPago numeric(18,0)
 
 					SET @nro_pago = @nro_pago + 1
 
-					INSERT INTO GRUPO6.RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,formaPagoRegistroPago)
-							VALUES(@nro_factura,@id_sucursal,@nro_pago,@fecha_cobro,@fecha_vto,@importe,@forma_pago)
+					SET @id_formaPago = (SELECT forma.idFormaPago FROM GRUPO6.FormaPago forma WHERE forma.descripcionFormaPago = @forma_pago)
+
+					INSERT INTO GRUPO6.RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,idFormaPago)
+							VALUES(@nro_factura,@id_sucursal,@nro_pago,@fecha_cobro,@fecha_vto,@importe,@id_formaPago)
 		
 				COMMIT TRANSACTION efectuarNuevoPago
 
 			END
 		
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].obtenerFormasDePago
+AS
+	BEGIN
+		SELECT *
+		FROM [GRUPO6].FormaPago
 	END
 GO
 
@@ -1271,7 +1300,7 @@ INSERT INTO GRUPO6.Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,es
 		VALUES ('Telecentro','1111','Rosas 635','1','Activo','20170808'),
 				('Edesur','2222','Asd 123','3','Activo','20170909')	  ------ INSERT DE PRUEBA PARA AGREGAR MAS DATOS
 -------------------------------------------------------------------------------------------	 
- 
+
       
       
   

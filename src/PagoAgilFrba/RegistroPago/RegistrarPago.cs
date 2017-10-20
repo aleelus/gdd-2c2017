@@ -23,13 +23,7 @@ namespace PagoAgilFrba.RegistroPago
             dataGridViewListaFacturas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewListaFacturas.RowHeadersVisible = false;
             dataGridViewListaFacturas.AllowUserToAddRows = false;
-
-            //FORMAS DE PAGO
-            this.comboBoxFormaPago.Items.AddRange(new object[] {"Efectivo"});
-            this.comboBoxFormaPago.Items.AddRange(new object[] { "Tarjeta de Crédito" });
-            this.comboBoxFormaPago.Items.AddRange(new object[] { "Tarjeta de Débito" });
-            this.comboBoxFormaPago.Items.AddRange(new object[] { "Cheque" });
-            comboBoxFormaPago.SelectedIndex = -1;
+          
 
 
             SQLParametros parametros = new SQLParametros();
@@ -44,6 +38,19 @@ namespace PagoAgilFrba.RegistroPago
                 comboBoxEmpresa.Update();
                 comboBoxEmpresa.SelectedIndex = -1;
                 comboBoxEmpresa.SelectedValue = -1;
+
+            }
+
+            DataTable formasDePago;
+
+            if (ConexionDB.Procedure("obtenerFormasDePago", parametros.get(), out formasDePago))
+            {
+                comboBoxFormaPago.DisplayMember = "descripcionFormaPago";
+                comboBoxFormaPago.ValueMember = "idFormaPago";
+                comboBoxFormaPago.DataSource = formasDePago;
+                comboBoxFormaPago.Update();
+                comboBoxFormaPago.SelectedIndex = -1;
+                comboBoxFormaPago.SelectedValue = -1;
 
             }
 
