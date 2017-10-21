@@ -1215,11 +1215,13 @@ AS
 
 		DECLARE @nro_pago numeric(18,0) = (SELECT TOP 1 numeroPagoRegistroPago FROM GRUPO6.RegistroPago ORDER BY numeroPagoRegistroPago DESC)
 		DECLARE @id_formaPago numeric(18,0)
+		DECLARE @bandera numeric(18,0) = 0
 				
 		SET @pos = charindex(@delim, @strlist)
 		SET @idEmpresa = substring(@strlist, 1, @pos-1)
 		SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 		
 		SET @pos = charindex(@delim, @strlist)
+
 							
 		WHILE ((len(@strlist) > 0) and (@strlist <> ''))
 			BEGIN
@@ -1227,6 +1229,7 @@ AS
 				SET @idEmpresa_anterior = @idEmpresa			
 
 				SET @nro_pago = @nro_pago + 1
+				SET @bandera = 0
 
 				WHILE((len(@strlist) > 0) AND (@strlist <> '') AND @idEmpresa_anterior = @idEmpresa)
 					BEGIN
@@ -1278,11 +1281,18 @@ AS
 								SET @strlist = ''
 							END
 
-						BEGIN TRANSACTION efectuarNuevoPago	
+						BEGIN TRANSACTION efectuarNuevoPago		
+						
 							SET @id_formaPago = (SELECT forma.idFormaPago FROM GRUPO6.FormaPago forma WHERE forma.descripcionFormaPago = @formaPago)
 
-							INSERT INTO GRUPO6.RegistroPago(idEmpresa, idCliente,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,importeRegistroPago,idFormaPago)
+							IF @bandera = 0
+								BEGIN
+									INSERT INTO GRUPO6.RegistroPago(idEmpresa, idCliente,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,importeRegistroPago,idFormaPago)
 									VALUES(@idEmpresa,@idCliente,@idSucursal,@nro_pago,@fechaCobro,@importePago,@id_formaPago)
+
+									SET @bandera = 1
+								END							
+													
 							UPDATE [GRUPO6].Factura
 									SET idRegistroPago = (SELECT IDENT_CURRENT('GRUPO6.RegistroPago'))
 									WHERE numeroFactura = @nroFactura
@@ -1290,13 +1300,14 @@ AS
 
 						IF(len(@strlist) > 0)
 							BEGIN
+								SET @pos = charindex(@delim, @strlist)
 								SET @idEmpresa = substring(@strlist, 1, @pos-1)
 								SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
 								SET @pos = charindex(@delim, @strlist)
 							END
 									
 
-					END
+					END		
         
 			END	
 			
