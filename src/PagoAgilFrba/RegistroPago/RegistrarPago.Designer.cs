@@ -54,6 +54,8 @@
             this.dataGridViewListaFacturas = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.buttonLimpiar = new System.Windows.Forms.Button();
+            this.EmpresaId = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ClienteId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Datos = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Empresa = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NroFactura = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -299,6 +301,8 @@
             this.dataGridViewListaFacturas.AllowUserToDeleteRows = false;
             this.dataGridViewListaFacturas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewListaFacturas.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.EmpresaId,
+            this.ClienteId,
             this.Datos,
             this.Empresa,
             this.NroFactura,
@@ -333,6 +337,18 @@
             this.buttonLimpiar.Text = "Limpiar";
             this.buttonLimpiar.UseVisualStyleBackColor = true;
             this.buttonLimpiar.Click += new System.EventHandler(this.buttonLimpiar_Click);
+            // 
+            // EmpresaId
+            // 
+            this.EmpresaId.HeaderText = "EmpresaId";
+            this.EmpresaId.Name = "EmpresaId";
+            this.EmpresaId.ReadOnly = true;
+            // 
+            // ClienteId
+            // 
+            this.ClienteId.HeaderText = "ClienteId";
+            this.ClienteId.Name = "ClienteId";
+            this.ClienteId.ReadOnly = true;
             // 
             // Datos
             // 
@@ -420,6 +436,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxFormaPago;
         private System.Windows.Forms.Label labelFormaPago;
+        private System.Windows.Forms.DataGridViewTextBoxColumn EmpresaId;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ClienteId;
         private System.Windows.Forms.DataGridViewTextBoxColumn Datos;
         private System.Windows.Forms.DataGridViewTextBoxColumn Empresa;
         private System.Windows.Forms.DataGridViewTextBoxColumn NroFactura;

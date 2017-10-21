@@ -13,6 +13,10 @@ namespace PagoAgilFrba.RegistroPago
 {
     public partial class RegistrarPago : Form
     {
+
+        private decimal idEmpresa;
+        private decimal idCliente;
+
         public RegistrarPago()
         {
             InitializeComponent();
@@ -23,6 +27,8 @@ namespace PagoAgilFrba.RegistroPago
             dataGridViewListaFacturas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridViewListaFacturas.RowHeadersVisible = false;
             dataGridViewListaFacturas.AllowUserToAddRows = false;
+            dataGridViewListaFacturas.Columns[0].Visible = false;
+            dataGridViewListaFacturas.Columns[1].Visible = false;
           
 
 
@@ -67,6 +73,7 @@ namespace PagoAgilFrba.RegistroPago
             SQLParametros parametros = new SQLParametros();
 
             parametros.add("@id_empresa", comboBoxEmpresa.SelectedValue);
+            idEmpresa = Convert.ToDecimal(comboBoxEmpresa.SelectedValue);
             
 
             DataTable clientesEncontrados;
@@ -92,6 +99,7 @@ namespace PagoAgilFrba.RegistroPago
             SQLParametros parametros = new SQLParametros();
 
             parametros.add("@id_cliente", comboBoxCliente.SelectedValue);
+            idCliente = Convert.ToDecimal(comboBoxCliente.SelectedValue);
 
 
             DataTable facturasEncontrados;
@@ -135,7 +143,7 @@ namespace PagoAgilFrba.RegistroPago
 
             foreach (DataGridViewRow fila in dataGridViewListaFacturas.Rows)
             {
-                if (fila.Cells[2].Value.ToString() == comboBoxNroFactura.Text)
+                if (fila.Cells[4].Value.ToString() == comboBoxNroFactura.Text)
                 {
                     correcto = false;
                     errorProvider1.SetError(comboBoxNroFactura, "Ya se agrego esa factura");
@@ -177,6 +185,8 @@ namespace PagoAgilFrba.RegistroPago
                 int rowIndex = this.dataGridViewListaFacturas.Rows.Add();
                 var row = this.dataGridViewListaFacturas.Rows[rowIndex];
 
+                row.Cells["EmpresaId"].Value = idEmpresa.ToString();
+                row.Cells["ClienteId"].Value = idCliente.ToString();
                 row.Cells["Datos"].Value = ((DataRowView)(comboBoxCliente.SelectedItem)).Row.ItemArray[1].ToString();
                 row.Cells["Empresa"].Value = ((DataRowView)(comboBoxEmpresa.SelectedItem)).Row.ItemArray[1].ToString();
                 row.Cells["NroFactura"].Value = comboBoxNroFactura.Text;
@@ -205,33 +215,42 @@ namespace PagoAgilFrba.RegistroPago
         private void buttonRegistrarPago_Click(object sender, EventArgs e)
         {
 
+            //idEmpresa*idCliente*idSucursal*nroFactura*fechaCobro**importe*formaPago
+
             if (dataGridViewListaFacturas.Rows.Count > 0) {               
 
                 SQLParametros parametros = new SQLParametros();
                 int contador = 0;
+                string listaNuevoPago = "";
+                this.dataGridViewListaFacturas.Sort(this.dataGridViewListaFacturas.Columns["Empresa"], ListSortDirection.Ascending);
 
                 foreach (DataGridViewRow fila in dataGridViewListaFacturas.Rows)
                 {
-                    parametros.add("@nro_factura", fila.Cells["NroFactura"].Value);
-                    parametros.add("@id_sucursal", Sesion.sucursal_id);                    
-                    parametros.add("@fecha_cobro", dateTimePickerCobro.Value);
-                    parametros.add("@fecha_vto", fila.Cells["FechaVto"].Value);
-                    parametros.add("@importe", fila.Cells["Importe"].Value);
-                    parametros.add("@forma_pago", fila.Cells["FormaPago"].Value);
-
-                    if (ConexionDB.Procedure("nuevoPago", parametros.get()))                    
-                        contador++;
-
-                    parametros.Clear();
+                    listaNuevoPago = listaNuevoPago + fila.Cells["EmpresaId"].Value + "*"
+                                                    + fila.Cells["ClienteId"].Value + "*"
+                                                    + Sesion.sucursal_id.ToString() + "*"
+                                                    + fila.Cells["NroFactura"].Value + "*"
+                                                    + dateTimePickerCobro.Value.ToShortDateString() + "*"                                                    
+                                                    + fila.Cells["Importe"].Value + "*"
+                                                    + fila.Cells["FormaPago"].Value + "*";                 
+                    
                 }
 
-                if (contador == 1)
+                parametros.add("@listaNuevoPago", listaNuevoPago);
+
+
+                if (ConexionDB.Procedure("nuevoPago", parametros.get())) {
+                    MessageBox.Show("Se registro el pago de la/s factura/s");                
+                }
+
+
+               /* if (contador == 1)
                 {
                     MessageBox.Show("La factura " + comboBoxNroFactura.Text + " se ha pagado");
                 }
                 else if (contador >1){
                     MessageBox.Show("Las " + contador.ToString() + " se han pagado");
-                }
+                }*/
                       
             }
 

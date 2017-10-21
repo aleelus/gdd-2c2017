@@ -21,12 +21,6 @@ IF OBJECT_ID('[GRUPO6].Usuario_Sucursal') IS NOT NULL
 IF OBJECT_ID('[GRUPO6].Usuario') IS NOT NULL
 	DROP TABLE [GRUPO6].Usuario
 	
-IF OBJECT_ID('[GRUPO6].RegistroPago') IS NOT NULL
-	DROP TABLE [GRUPO6].RegistroPago
-
-IF OBJECT_ID('[GRUPO6].Sucursal') IS NOT NULL
-	DROP TABLE [GRUPO6].Sucursal
-	
 IF OBJECT_ID('[GRUPO6].Item') IS NOT NULL
 	DROP TABLE [GRUPO6].Item
 	
@@ -42,11 +36,17 @@ IF OBJECT_ID('[GRUPO6].Empresa_Rendicion') IS NOT NULL
 IF OBJECT_ID('[GRUPO6].DevolucionRendicion') IS NOT NULL
 	DROP TABLE [GRUPO6].DevolucionRendicion
 
+IF OBJECT_ID('[GRUPO6].Factura') IS NOT NULL
+	DROP TABLE [GRUPO6].Factura
+
 IF OBJECT_ID('[GRUPO6].Rendicion') IS NOT NULL
 	DROP TABLE [GRUPO6].Rendicion
 
-IF OBJECT_ID('[GRUPO6].Factura') IS NOT NULL
-	DROP TABLE [GRUPO6].Factura
+IF OBJECT_ID('[GRUPO6].RegistroPago') IS NOT NULL
+	DROP TABLE [GRUPO6].RegistroPago
+
+IF OBJECT_ID('[GRUPO6].Sucursal') IS NOT NULL
+	DROP TABLE [GRUPO6].Sucursal
 
 IF OBJECT_ID('[GRUPO6].Cliente') IS NOT NULL
 	DROP TABLE [GRUPO6].Cliente
@@ -244,10 +244,41 @@ CREATE TABLE [GRUPO6].Empresa(
 );
 GO
 
+CREATE TABLE [GRUPO6].Rendicion(
+	idRendicion NUMERIC(18,0) IDENTITY(1,1) PRIMARY KEY,	
+	idEmpresa NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Empresa(idEmpresa),
+	numeroRendicion NUMERIC(18,0) NOT NULL UNIQUE,
+	fechaRendicion DATETIME NOT NULL,
+	cantidadFacturasRendidas NUMERIC(18,0) NOT NULL,
+	importeRendicion NUMERIC(18,0) NOT NULL,
+	porcentajeComicionRendicion NUMERIC(18,0) NOT NULL,
+	importeTotalRendicion NUMERIC(18,0) NOT NULL,
+	CONSTRAINT cantidadFacturasRendidas_chk CHECK (cantidadFacturasRendidas>0),
+	CONSTRAINT importeRendicion_chk CHECK (importeRendicion>0),
+	CONSTRAINT porcentajeComicionRendicion_chk CHECK (porcentajeComicionRendicion>0),
+	CONSTRAINT importeTotalRendicion_chk CHECK (importeTotalRendicion>0)
+);
+GO
+
+CREATE TABLE [GRUPO6].RegistroPago(
+	idRegistroPago NUMERIC(18,0) IDENTITY(1,1) PRIMARY KEY,
+	idCliente NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Cliente(idCliente),
+	idEmpresa NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Empresa(idEmpresa),
+	idSucursal NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Sucursal(idSucursal),	
+	numeroPagoRegistroPago NUMERIC(18,0) NOT NULL UNIQUE,
+	fechaCobroRegistroPago DATETIME NOT NULL,	
+	importeRegistroPago NUMERIC(18,0) NOT NULL,
+	idFormaPago NUMERIC(18,0) NOT NULL,
+	CONSTRAINT importeRegistroPago_chk CHECK (importeRegistroPago>0)
+);
+GO
+
 CREATE TABLE [GRUPO6].Factura(
 	idFactura NUMERIC(18,0) IDENTITY(1,1) PRIMARY KEY,
 	idEmpresa NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Empresa(idEmpresa),
 	idCliente NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Cliente(idCliente),
+	idRendicion NUMERIC(18,0) NULL DEFAULT NULL FOREIGN KEY REFERENCES [GRUPO6].Rendicion(idRendicion),
+	idRegistroPago NUMERIC(18,0) NULL DEFAULT NULL FOREIGN KEY REFERENCES [GRUPO6].RegistroPago(idRegistroPago),
 	numeroFactura NUMERIC(18,0) NOT NULL UNIQUE,
 	fechaAltaFactura DATETIME NOT NULL,
 	fechaVencimientoFactura DATETIME NOT NULL,
@@ -279,22 +310,6 @@ CREATE TABLE [GRUPO6].DevolucionFactura(
 );
 GO
 
-CREATE TABLE [GRUPO6].Rendicion(
-	idRendicion NUMERIC(18,0) IDENTITY(1,1) PRIMARY KEY,
-	idFactura NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Factura(idFactura),
-	fechaRendicion DATETIME NOT NULL,
-	cantidadFacturasRendidas NUMERIC(18,0) NOT NULL,
-	conjuntoFacturasRendidas NUMERIC(18,0) NOT NULL,
-	importeRendicion NUMERIC(18,0) NOT NULL,
-	porcentajeComicionRendicion NUMERIC(18,0) NOT NULL,
-	importeTotalRendicion NUMERIC(18,0) NOT NULL,
-	CONSTRAINT cantidadFacturasRendidas_chk CHECK (cantidadFacturasRendidas>0),
-	CONSTRAINT importeRendicion_chk CHECK (importeRendicion>0),
-	CONSTRAINT porcentajeComicionRendicion_chk CHECK (porcentajeComicionRendicion>0),
-	CONSTRAINT importeTotalRendicion_chk CHECK (importeTotalRendicion>0)
-);
-GO
-
 CREATE TABLE [GRUPO6].Empresa_Rendicion(
 	idEmpresa NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Empresa(idEmpresa),
 	idRendicion NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Rendicion(idRendicion)
@@ -308,19 +323,6 @@ CREATE TABLE [GRUPO6].DevolucionRendicion(
 	montoDevolucionRendicion NUMERIC(18,0) NOT NULL,
 	motivoDevolucionRendicion VARCHAR(255) NOT NULL,
 	CONSTRAINT montoDevolucionRendicion_chk CHECK (montoDevolucionRendicion>0)
-);
-GO
-
-CREATE TABLE [GRUPO6].RegistroPago(
-	idRegistroPago NUMERIC(18,0) IDENTITY(1,1) PRIMARY KEY,
-	numeroFactura NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Factura(numeroFactura),	
-	idSucursal NUMERIC(18,0) NOT NULL FOREIGN KEY REFERENCES [GRUPO6].Sucursal(idSucursal),
-	numeroPagoRegistroPago NUMERIC(18,0) NOT NULL UNIQUE,
-	fechaCobroRegistroPago DATETIME NOT NULL,
-	fechaVencimientoRegistroPago DATETIME NOT NULL,
-	importeRegistroPago NUMERIC(18,0) NOT NULL,
-	idFormaPago NUMERIC(18,0) NOT NULL,
-	CONSTRAINT importeRegistroPago_chk CHECK (importeRegistroPago>0)
 );
 GO
 
@@ -388,15 +390,18 @@ GO
 CREATE PROCEDURE [GRUPO6].Migracion_FACTURA -- DUDA SOBRE ESTA MIGRACION
 	AS
 	BEGIN
-		INSERT INTO [GRUPO6].Factura(idEmpresa,idCliente,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
+		INSERT INTO [GRUPO6].Factura(idEmpresa,idCliente,idRendicion,idRegistroPago,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
 			SELECT DISTINCT (SELECT emp.idEmpresa FROM GRUPO6.Empresa emp WHERE cuitEmpresa=maestra.Empresa_Cuit),
 					(SELECT cli.idCliente FROM GRUPO6.Cliente cli WHERE cli.dniCliente=maestra.[Cliente-Dni]),
+					(SELECT ren.idRendicion FROM GRUPO6.Rendicion ren WHERE ren.numeroRendicion = maestra.Rendicion_Nro),
+					(SELECT DISTINCT reg.idRegistroPago FROM gd_esquema.Maestra m1	JOIN GRUPO6.RegistroPago reg ON reg.numeroPagoRegistroPago = m1.Pago_nro 																			 
+																			WHERE m1.Pago_nro IS NOT NULL AND m1.Nro_Factura = maestra.Nro_Factura),
 					maestra.Nro_Factura,
 					maestra.Factura_Fecha,
 					dateadd(day,30,maestra.Factura_Fecha_Vencimiento),
 					'Activo',
 					(SELECT SUM(ma.ItemFactura_Monto) FROM gd_esquema.Maestra ma WHERE ma.Pago_Fecha IS NULL AND maestra.Nro_Factura=ma.Nro_Factura GROUP BY Nro_Factura)
-				FROM gd_esquema.Maestra maestra
+				FROM gd_esquema.Maestra maestra WHERE maestra.Pago_nro IS NULL
 				
 			
 	END
@@ -427,13 +432,14 @@ CREATE PROCEDURE [GRUPO6].Migracion_REGISTRO_PAGO
 				('Cheque')
  
 
-		INSERT INTO [GRUPO6].RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,idFormaPago)
-			SELECT DISTINCT maestra.Nro_Factura,
+		INSERT INTO [GRUPO6].RegistroPago(idCliente,idEmpresa,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,importeRegistroPago,idFormaPago)
+			SELECT DISTINCT 
+					(SELECT cli.idCliente FROM GRUPO6.Cliente cli WHERE cli.dniCliente = maestra.[Cliente-Dni]),
+					(SELECT emp.idEmpresa FROM GRUPO6.Empresa emp WHERE emp.cuitEmpresa = maestra.Empresa_Cuit),
 					(SELECT suc.idSucursal FROM GRUPO6.Sucursal suc WHERE suc.CodigoPostalSucursal = maestra.Sucursal_Codigo_Postal),
 					maestra.Pago_nro,
 					maestra.Pago_Fecha,
-					(SELECT fac.fechaVencimientoFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura = maestra.Nro_Factura),
-					(SELECT fac.totalFactura FROM GRUPO6.Factura fac WHERE fac.numeroFactura = maestra.Nro_Factura),
+					maestra.Total,
 					(SELECT forma.idFormaPago FROM GRUPO6.FormaPago forma WHERE forma.descripcionFormaPago = maestra.FormaPagoDescripcion)					
 				FROM gd_esquema.Maestra maestra WHERE maestra.Pago_nro IS NOT NULL
 				
@@ -797,10 +803,10 @@ AS
 				RAISERROR(@error,16,1)
 				RETURN
 			END
-
+			
 		IF EXISTS (SELECT 1 FROM [GRUPO6].Factura Fac					
-					JOIN GRUPO6.RegistroPago RegPago ON (RegPago.numeroFactura = Fac.numeroFactura AND Fac.idEmpresa=@id_empresa)					
-					WHERE NOT EXISTS (SELECT 1 FROM GRUPO6.Rendicion Rend WHERE Rend.idFactura=Fac.idFactura)) -- REVISAR ESTA CONSULTA!!!!
+					JOIN GRUPO6.RegistroPago RegPago ON (RegPago.idEmpresa = @id_empresa)									
+					WHERE NOT EXISTS (SELECT 1 FROM GRUPO6.Rendicion Rend WHERE Rend.idRendicion=Fac.idRendicion)) -- REVISAR ESTA CONSULTA!!!!
 			BEGIN
 				SET @error = 'La empresa con cuit  '+@cuit+' tiene rendiciones pendientes'
 				RAISERROR(@error,16,1)
@@ -1194,41 +1200,107 @@ AS
 GO
 
 CREATE PROCEDURE [GRUPO6].nuevoPago
-@nro_factura numeric(18,0),
-@id_sucursal numeric(18,0),
-@fecha_cobro datetime,
-@fecha_vto datetime,
-@importe numeric(18,0),
-@forma_pago varchar(255)
+@listaNuevoPago varchar(max)
+
+-- idEmpresa*idCliente*idSucursal*nroFactura*fechaCobro*importe*formaPago
 
 AS
 	BEGIN
-		DECLARE @error nvarchar(max)
-
-		IF EXISTS (SELECT 1 FROM GRUPO6.RegistroPago WHERE numeroFactura = @nro_factura)
-			BEGIN
-				SET @error = 'La factura '+CONVERT(nvarchar(255),@nro_factura)+' ya fue pagada'
-					RAISERROR(@error,16,1)
-					RETURN
-			END
-		ELSE
-			BEGIN
-
-				BEGIN TRANSACTION efectuarNuevoPago
+		DECLARE @error nvarchar(max)	
+		DECLARE @strlist NVARCHAR(max), @pos INT, @delim CHAR
+		DECLARE @idEmpresa_anterior varchar(255), @idEmpresa varchar(255), @idCliente varchar(255), @idSucursal varchar(255),@nroFactura numeric(18,0), @fechaCobro datetime, @importePago numeric(18,2), @formaPago varchar(255)
 		
-					DECLARE @nro_pago numeric(18,0) = (SELECT TOP 1 numeroPagoRegistroPago FROM GRUPO6.RegistroPago ORDER BY numeroPagoRegistroPago DESC)
-					DECLARE @id_formaPago numeric(18,0)
+		SET @strlist = ISNULL(@listaNuevoPago,'')
+		SET @delim = '*'
 
-					SET @nro_pago = @nro_pago + 1
+		DECLARE @nro_pago numeric(18,0) = (SELECT TOP 1 numeroPagoRegistroPago FROM GRUPO6.RegistroPago ORDER BY numeroPagoRegistroPago DESC)
+		DECLARE @id_formaPago numeric(18,0)
+				
+		SET @pos = charindex(@delim, @strlist)
+		SET @idEmpresa = substring(@strlist, 1, @pos-1)
+		SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 		
+		SET @pos = charindex(@delim, @strlist)
+							
+		WHILE ((len(@strlist) > 0) and (@strlist <> ''))
+			BEGIN
+					
+				SET @idEmpresa_anterior = @idEmpresa			
 
-					SET @id_formaPago = (SELECT forma.idFormaPago FROM GRUPO6.FormaPago forma WHERE forma.descripcionFormaPago = @forma_pago)
+				SET @nro_pago = @nro_pago + 1
 
-					INSERT INTO GRUPO6.RegistroPago(numeroFactura,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,fechaVencimientoRegistroPago,importeRegistroPago,idFormaPago)
-							VALUES(@nro_factura,@id_sucursal,@nro_pago,@fecha_cobro,@fecha_vto,@importe,@id_formaPago)
-		
-				COMMIT TRANSACTION efectuarNuevoPago
+				WHILE((len(@strlist) > 0) AND (@strlist <> '') AND @idEmpresa_anterior = @idEmpresa)
+					BEGIN
 
-			END
+						IF @pos > 0
+							BEGIN											
+
+								SET @idCliente = substring(@strlist, 1, @pos-1)
+								SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
+								SET @pos = charindex(@delim, @strlist)
+
+								SET @idSucursal = substring(@strlist, 1, @pos-1)
+								SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
+								SET @pos = charindex(@delim, @strlist)
+
+								SET @nroFactura = CONVERT(numeric(18,0),substring(@strlist, 1, @pos-1))
+								SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
+								SET @pos = charindex(@delim, @strlist)
+
+								IF EXISTS (SELECT 1 FROM GRUPO6.Factura fac WHERE fac.numeroFactura = @nroFactura AND fac.idRegistroPago IS NOT NULL)
+									BEGIN
+										SET @error = 'La factura '+CONVERT(nvarchar(255),@nroFactura)+' ya fue pagada'
+											RAISERROR(@error,16,1)												
+											RETURN
+									END								
+
+								SET @fechaCobro  = CONVERT(datetime,substring(@strlist, 1, @pos-1))
+								SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
+								SET @pos = charindex(@delim, @strlist)
+
+
+								SET @importePago = (SELECT TRY_PARSE(substring(@strlist, 1, @pos-1) as numeric(18,2) using 'es-ES'))	
+								SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000))
+								SET @pos = charindex(@delim, @strlist) 
+
+							IF @pos > 0
+								BEGIN
+									SET @formaPago = substring(@strlist, 1, @pos-1)
+									SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 						
+								END
+							ELSE
+								BEGIN
+									SET @formaPago = substring(@strlist, 1, @pos-1)
+									SET @strlist = ''
+								END
+							END
+						ELSE	
+							BEGIN														
+								SET @strlist = ''
+							END
+
+						BEGIN TRANSACTION efectuarNuevoPago	
+							SET @id_formaPago = (SELECT forma.idFormaPago FROM GRUPO6.FormaPago forma WHERE forma.descripcionFormaPago = @formaPago)
+
+							INSERT INTO GRUPO6.RegistroPago(idEmpresa, idCliente,idSucursal,numeroPagoRegistroPago,fechaCobroRegistroPago,importeRegistroPago,idFormaPago)
+									VALUES(@idEmpresa,@idCliente,@idSucursal,@nro_pago,@fechaCobro,@importePago,@id_formaPago)
+							UPDATE [GRUPO6].Factura
+									SET idRegistroPago = (SELECT IDENT_CURRENT('GRUPO6.RegistroPago'))
+									WHERE numeroFactura = @nroFactura
+						COMMIT TRANSACTION efectuarNuevoPago
+
+						IF(len(@strlist) > 0)
+							BEGIN
+								SET @idEmpresa = substring(@strlist, 1, @pos-1)
+								SET @strlist = ltrim(substring(@strlist,charindex(@delim, @strlist)+1, 8000)) 
+								SET @pos = charindex(@delim, @strlist)
+							END
+									
+
+					END
+        
+			END	
+			
+			
 		
 	END
 GO
@@ -1250,9 +1322,10 @@ EXEC [GRUPO6].Migracion_CLIENTE
 EXEC [GRUPO6].Migracion_RUBRO
 EXEC [GRUPO6].Migracion_SUCURSAL
 EXEC [GRUPO6].Migracion_EMPRESA
+EXEC [GRUPO6].Migracion_REGISTRO_PAGO
 EXEC [GRUPO6].Migracion_FACTURA
 EXEC [GRUPO6].Migracion_ITEM
-EXEC [GRUPO6].Migracion_REGISTRO_PAGO
+
 --------------------------------------------------------------
 				--INSERTO DATOS
 --------------------------------------------------------------
