@@ -72,6 +72,8 @@ IF OBJECT_ID('[GRUPO6].Migracion_SUCURSAL') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_SUCURSAL
 IF OBJECT_ID('[GRUPO6].Migracion_EMPRESA') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_EMPRESA
+IF OBJECT_ID('[GRUPO6].Migracion_RENDICION') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].Migracion_RENDICION
 IF OBJECT_ID('[GRUPO6].Migracion_FACTURA') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].Migracion_FACTURA
 IF OBJECT_ID('[GRUPO6].Migracion_ITEM') IS NOT NULL
@@ -136,7 +138,13 @@ IF OBJECT_ID('[GRUPO6].nuevoPago') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].nuevoPago
 IF OBJECT_ID('[GRUPO6].obtenerFormasDePago') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].obtenerFormasDePago
-	
+IF OBJECT_ID('[GRUPO6].obtenerListaRendiciones') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerListaRendiciones
+IF OBJECT_ID('[GRUPO6].obtenerDetalleRendicion') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].obtenerDetalleRendicion
+IF OBJECT_ID('[GRUPO6].efectuarRendicion') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].efectuarRendicion
+		
 --------------------------------------------------------------
 				--Drop Schema
 --------------------------------------------------------------
@@ -250,12 +258,12 @@ CREATE TABLE [GRUPO6].Rendicion(
 	numeroRendicion NUMERIC(18,0) NOT NULL UNIQUE,
 	fechaRendicion DATETIME NOT NULL,
 	cantidadFacturasRendidas NUMERIC(18,0) NOT NULL,
-	importeRendicion NUMERIC(18,0) NOT NULL,
-	porcentajeComicionRendicion NUMERIC(18,0) NOT NULL,
-	importeTotalRendicion NUMERIC(18,0) NOT NULL,
+	importeRendicion NUMERIC(18,2) NOT NULL,
+	porcentajeComisionRendicion NUMERIC(18,2) NOT NULL,
+	importeTotalRendicion NUMERIC(18,2) NOT NULL,	
 	CONSTRAINT cantidadFacturasRendidas_chk CHECK (cantidadFacturasRendidas>0),
 	CONSTRAINT importeRendicion_chk CHECK (importeRendicion>0),
-	CONSTRAINT porcentajeComicionRendicion_chk CHECK (porcentajeComicionRendicion>0),
+	CONSTRAINT porcentajeComisionRendicion CHECK (porcentajeComisionRendicion>0),
 	CONSTRAINT importeTotalRendicion_chk CHECK (importeTotalRendicion>0)
 );
 GO
@@ -381,7 +389,7 @@ CREATE PROCEDURE [GRUPO6].Migracion_EMPRESA -- MIGRACION DE EMPRESA MOMENTANEA H
 	BEGIN
 		INSERT INTO [GRUPO6].Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,estadoEmpresa,fechaRendicionEmpresa)
 				SELECT DISTINCT Empresa_Nombre, Empresa_Cuit, Empresa_Direccion, Empresa_Rubro,'Activo',
-					CONVERT(datetime ,(SELECT MIN(CONVERT(numeric(18,0),t2.Rendicion_Fecha)) FROM gd_esquema.Maestra t2 WHERE t1.Empresa_Cuit=t2.Empresa_Cuit))
+					CONVERT(datetime ,(SELECT MAX(CONVERT(numeric(18,0),t2.Rendicion_Fecha)) FROM gd_esquema.Maestra t2 WHERE t1.Empresa_Cuit=t2.Empresa_Cuit))
 					FROM [GD2C2017].[gd_esquema].[Maestra] t1 WHERE Empresa_Cuit IS NOT NULL
 			
 	END
@@ -393,7 +401,8 @@ CREATE PROCEDURE [GRUPO6].Migracion_FACTURA -- DUDA SOBRE ESTA MIGRACION
 		INSERT INTO [GRUPO6].Factura(idEmpresa,idCliente,idRendicion,idRegistroPago,numeroFactura,fechaAltaFactura,fechaVencimientoFactura,estadoFactura,totalFactura)
 			SELECT DISTINCT (SELECT emp.idEmpresa FROM GRUPO6.Empresa emp WHERE cuitEmpresa=maestra.Empresa_Cuit),
 					(SELECT cli.idCliente FROM GRUPO6.Cliente cli WHERE cli.dniCliente=maestra.[Cliente-Dni]),
-					(SELECT ren.idRendicion FROM GRUPO6.Rendicion ren WHERE ren.numeroRendicion = maestra.Rendicion_Nro),
+					(SELECT DISTINCT ren.idRendicion FROM gd_esquema.Maestra m1	JOIN GRUPO6.Rendicion ren ON ren.numeroRendicion = m1.Rendicion_Nro
+																			WHERE m1.Rendicion_Nro IS NOT NULL AND m1.Nro_Factura = maestra.Nro_Factura),
 					(SELECT DISTINCT reg.idRegistroPago FROM gd_esquema.Maestra m1	JOIN GRUPO6.RegistroPago reg ON reg.numeroPagoRegistroPago = m1.Pago_nro 																			 
 																			WHERE m1.Pago_nro IS NOT NULL AND m1.Nro_Factura = maestra.Nro_Factura),
 					maestra.Nro_Factura,
@@ -442,6 +451,23 @@ CREATE PROCEDURE [GRUPO6].Migracion_REGISTRO_PAGO
 					maestra.Total,
 					(SELECT forma.idFormaPago FROM GRUPO6.FormaPago forma WHERE forma.descripcionFormaPago = maestra.FormaPagoDescripcion)					
 				FROM gd_esquema.Maestra maestra WHERE maestra.Pago_nro IS NOT NULL
+				
+			
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].Migracion_RENDICION 
+	AS
+	BEGIN
+		INSERT INTO [GRUPO6].Rendicion(idEmpresa,numeroRendicion,fechaRendicion,cantidadFacturasRendidas,importeRendicion,porcentajeComisionRendicion,importeTotalRendicion)
+			SELECT DISTINCT (SELECT emp.idEmpresa FROM GRUPO6.Empresa emp WHERE cuitEmpresa=maestra.Empresa_Cuit),
+					maestra.Rendicion_Nro,
+					maestra.Rendicion_Fecha,
+					(SELECT COUNT(DISTINCT m1.Nro_Factura) FROM gd_esquema.Maestra m1 WHERE m1.Rendicion_Nro = maestra.Rendicion_Nro),
+					maestra.ItemRendicion_Importe,
+					CONVERT(numeric(18,2),((maestra.ItemRendicion_Importe*100)/maestra.Total)),
+					maestra.Total
+				FROM gd_esquema.Maestra maestra WHERE maestra.Rendicion_Nro IS NOT NULL
 				
 			
 	END
@@ -1324,6 +1350,51 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].obtenerListaRendiciones 
+AS
+	BEGIN 
+		SELECT DISTINCT fac.idEmpresa,emp.nombreEmpresa,emp.fechaRendicionEmpresa
+		FROM [GRUPO6].Factura fac
+		JOIN GRUPO6.Empresa emp ON emp.idEmpresa = fac.idEmpresa
+		WHERE fac.idRegistroPago IS NOT NULL AND fac.idRendicion IS NULL
+		ORDER BY emp.nombreEmpresa,emp.fechaRendicionEmpresa DESC
+
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].obtenerDetalleRendicion
+@id_empresa numeric(18,0)
+AS
+	BEGIN
+		SELECT fac.idFactura,fac.numeroFactura as 'Numero de factura',fac.totalFactura as 'Importe Total',fac.fechaVencimientoFactura as 'Fecha de Vencimiento'
+		FROM [GRUPO6].Factura fac WHERE fac.idEmpresa = @id_empresa AND fac.idRegistroPago IS NOT NULL AND fac.idRendicion IS NULL
+		ORDER BY fac.numeroFactura	
+
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].efectuarRendicion
+@id_empresa numeric(18,0),
+@cant_facturas_rendidas numeric(18,0),
+@importe_rendicion numeric(18,2),
+@porcentaje_comision numeric(18,2),
+@importe_total numeric(18,2)
+
+AS
+	BEGIN
+		DECLARE @nro_rendicion numeric(18,2) = (SELECT TOP 1 numeroRendicion FROM GRUPO6.Rendicion ORDER BY numeroRendicion DESC) + 1
+
+		INSERT INTO GRUPO6.Rendicion(idEmpresa,numeroRendicion,fechaRendicion,cantidadFacturasRendidas,importeRendicion,porcentajeComisionRendicion,importeTotalRendicion)
+			VALUES(@id_empresa,@nro_rendicion,GETDATE(),@cant_facturas_rendidas,@importe_rendicion,@porcentaje_comision,@importe_total)
+
+		UPDATE [GRUPO6].Factura 
+						SET idRendicion=(SELECT IDENT_CURRENT('GRUPO6.Rendicion'))
+						WHERE idRendicion IS NULL AND idRegistroPago IS NOT NULL AND idEmpresa = @id_empresa
+			
+
+	END
+GO
+
 
 --------------------------------------------------------------
 				--EXECUTE STORE PROCEDURE
@@ -1334,6 +1405,7 @@ EXEC [GRUPO6].Migracion_RUBRO
 EXEC [GRUPO6].Migracion_SUCURSAL
 EXEC [GRUPO6].Migracion_EMPRESA
 EXEC [GRUPO6].Migracion_REGISTRO_PAGO
+EXEC [GRUPO6].Migracion_RENDICION
 EXEC [GRUPO6].Migracion_FACTURA
 EXEC [GRUPO6].Migracion_ITEM
 
@@ -1384,7 +1456,8 @@ INSERT INTO GRUPO6.Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,es
 		VALUES ('Telecentro','1111','Rosas 635','1','Activo','20170808'),
 				('Edesur','2222','Asd 123','3','Activo','20170909')	  ------ INSERT DE PRUEBA PARA AGREGAR MAS DATOS
 -------------------------------------------------------------------------------------------	 
-
+INSERT INTO GRUPO6.Rendicion(idEmpresa,numeroRendicion,fechaRendicion,cantidadFacturasRendidas,importeRendicion,porcentajeComisionRendicion,importeTotalRendicion)
+	VALUES(2,34649,'2017-09-09 00:00:00.000',2,100.00,10.00,1000.00) -- INSERT DE PRUEBA PARA AGREGAR MAS DATOS
       
       
   
