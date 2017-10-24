@@ -226,8 +226,7 @@ namespace PagoAgilFrba.RegistroPago
 
                 foreach (DataGridViewRow fila in dataGridViewListaFacturas.Rows)
                 {
-                    listaNuevoPago = listaNuevoPago + fila.Cells["EmpresaId"].Value + "*"
-                                                    + fila.Cells["ClienteId"].Value + "*"
+                    listaNuevoPago = listaNuevoPago + fila.Cells["ClienteId"].Value + "*"
                                                     + Sesion.sucursal_id.ToString() + "*"
                                                     + fila.Cells["NroFactura"].Value + "*"
                                                     + dateTimePickerCobro.Value.ToShortDateString() + "*"                                                    
