@@ -220,7 +220,7 @@ namespace PagoAgilFrba.RegistroPago
             if (dataGridViewListaFacturas.Rows.Count > 0) {               
 
                 SQLParametros parametros = new SQLParametros();
-                int contador = 0;
+                
                 string listaNuevoPago = "";
                 this.dataGridViewListaFacturas.Sort(this.dataGridViewListaFacturas.Columns["Empresa"], ListSortDirection.Ascending);
 
