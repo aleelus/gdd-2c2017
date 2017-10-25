@@ -60,6 +60,13 @@ IF OBJECT_ID('[GRUPO6].Rubro') IS NOT NULL
 IF OBJECT_ID('[GRUPO6].FormaPago') IS NOT NULL
 	DROP TABLE [GRUPO6].FormaPago
 
+
+--------------------------------------------------------------
+				--DELETE FUNCTION
+--------------------------------------------------------------
+IF OBJECT_ID('[GRUPO6].obtenerCantFacturasXEmpresa') IS NOT NULL
+	DROP FUNCTION [GRUPO6].obtenerCantFacturasXEmpresa
+
 --------------------------------------------------------------
 				--DELETE STORE PROCEDURE
 --------------------------------------------------------------
@@ -152,6 +159,10 @@ IF OBJECT_ID('[GRUPO6].buscarFacturaRendicionADevolver') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].buscarFacturaRendicionADevolver
 IF OBJECT_ID('[GRUPO6].devolverFacturaRendicion') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].devolverFacturaRendicion
+IF OBJECT_ID('[GRUPO6].generarListado0') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].generarListado0
+IF OBJECT_ID('[GRUPO6].generarListado1') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].generarListado1
 		
 --------------------------------------------------------------
 				--Drop Schema
@@ -164,6 +175,8 @@ GO
 --------------------------------------------------------------
 CREATE SCHEMA [GRUPO6] AUTHORIZATION [gd]
 GO
+
+
 --------------------------------------------------------------
 				--Create Table
 --------------------------------------------------------------
@@ -348,6 +361,24 @@ CREATE TABLE [GRUPO6].FormaPago(
 	
 );
 GO
+
+--------------------------------------------------------------
+				--CREATE FUNCTION
+--------------------------------------------------------------
+CREATE FUNCTION [GRUPO6].obtenerCantFacturasXEmpresa(@id_empresa numeric(18,0),@anio numeric(18,0),@pMes numeric(18,0),@uMes numeric(18,0))
+RETURNS numeric(18,0)
+AS
+	BEGIN 
+		DECLARE @cant numeric(18,0)
+
+		(SELECT @cant = COUNT(*) FROM GRUPO6.Factura f 
+					JOIN GRUPO6.RegistroPago r ON (f.idEmpresa=@id_empresa AND f.idRegistroPago= r.idRegistroPago AND YEAR(r.fechaCobroRegistroPago) = @anio AND MONTH(r.fechaCobroRegistroPago) BETWEEN @pMes AND @uMes)
+					WHERE f.idRegistroPago IS NOT NULL)
+
+		RETURN @cant
+	END
+GO
+
 --------------------------------------------------------------
 				--CREATE STORE PROCEDURE
 --------------------------------------------------------------
@@ -1218,7 +1249,7 @@ CREATE PROCEDURE [GRUPO6].buscarFacturasDeClientes
 AS
 	BEGIN
 		SELECT fac.idFactura, fac.numeroFactura  FROM GRUPO6.Factura fac
-			WHERE idCliente=@id_cliente
+			WHERE fac.idCliente=@id_cliente
 		RETURN
 	END
 GO
@@ -1539,6 +1570,57 @@ AS
 	END
 GO
 
+CREATE PROCEDURE [GRUPO6].generarListado0
+@anio numeric(18,0),
+@primerMes numeric(18,0),
+@ultimoMes numeric(18,0)
+AS
+	BEGIN
+		DECLARE @error nvarchar(max)
+		DECLARE @total numeric(18,0)= (SELECT COUNT(*) FROM GRUPO6.Factura fac 
+		JOIN GRUPO6.RegistroPago reg ON (fac.idRegistroPago= reg.idRegistroPago AND YEAR(reg.fechaCobroRegistroPago) = @anio AND MONTH(reg.fechaCobroRegistroPago) BETWEEN @primerMes AND @ultimoMes)
+		WHERE fac.idRegistroPago IS NOT NULL)
+
+		IF @total = 0
+			BEGIN				
+				SET @error = 'total es igual a 0'
+				RAISERROR(@error,16,1)												
+				RETURN								
+			END		
+
+		-- NO ME ANDA CON LA IMPLEMENTACION DE LA FUNCION
+		--SELECT DISTINCT emp.nombreEmpresa as 'Nombre de la Empresa',
+		--		(CONVERT(numeric(18,2),(([GRUPO6].obtenerCantFacturasXEmpresa(emp.idEmpresa,@anio,@primerMes,@ultimoMes))/@total)*100)) as 'Porcentaje'
+		--		FROM GRUPO6.Factura fac 
+		--		JOIN GRUPO6.Empresa emp ON emp.idEmpresa = fac.idEmpresa
+		--		WHERE fac.idRegistroPago IS NOT NULL
+
+		SELECT DISTINCT TOP 5 emp.nombreEmpresa as 'Nombre de la Empresa',
+				(CONVERT(numeric(18,2),((SELECT COUNT(*) FROM GRUPO6.Factura f 
+					JOIN GRUPO6.RegistroPago r ON (f.idEmpresa= emp.idEmpresa AND f.idRegistroPago= r.idRegistroPago AND YEAR(r.fechaCobroRegistroPago) = @anio AND MONTH(r.fechaCobroRegistroPago) BETWEEN @primerMes AND @ultimoMes)
+					WHERE f.idRegistroPago IS NOT NULL)/@total)*100)) as 'Porcentaje'
+				FROM GRUPO6.Factura fac 
+				JOIN GRUPO6.Empresa emp ON emp.idEmpresa = fac.idEmpresa
+				WHERE fac.idRegistroPago IS NOT NULL ORDER BY Porcentaje DESC
+
+
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].generarListado1
+@anio numeric(18,0),
+@primerMes numeric(18,0),
+@ultimoMes numeric(18,0)
+AS
+	BEGIN
+		DECLARE @error nvarchar(max)	
+
+		SELECT TOP 5 emp.nombreEmpresa, 
+		(SELECT SUM(r.importeTotalRendicion) FROM GRUPO6.Rendicion r WHERE r.idEmpresa=emp.idEmpresa AND YEAR(r.fechaRendicion) = @anio AND MONTH(r.fechaRendicion) BETWEEN @primerMes AND @ultimoMes) as 'Total Rendicion' 
+		FROM GRUPO6.Empresa emp ORDER BY [Total Rendicion] DESC
+
+	END
+GO
 
 --------------------------------------------------------------
 				--EXECUTE STORE PROCEDURE
@@ -1601,7 +1683,8 @@ INSERT INTO GRUPO6.Empresa(nombreEmpresa,cuitEmpresa,direccionEmpresa,idRubro,es
 				('Edesur','2222','Asd 123','3','Activo','20170909')	  ------ INSERT DE PRUEBA PARA AGREGAR MAS DATOS
 -------------------------------------------------------------------------------------------	 
 INSERT INTO GRUPO6.Rendicion(idEmpresa,numeroRendicion,fechaRendicion,cantidadFacturasRendidas,importeRendicion,porcentajeComisionRendicion,importeTotalRendicion)
-	VALUES(2,34649,'2017-09-09 00:00:00.000',2,100.00,10.00,1000.00) -- INSERT DE PRUEBA PARA AGREGAR MAS DATOS
+	VALUES(2,34649,'2017-09-09 00:00:00.000',2,100.00,10.00,1000.00),
+		  (3,70051,'2016-10-12 00:00:00.000',2,100.00,10.00,2005000.00) -- INSERT DE PRUEBA PARA AGREGAR MAS DATOS
       
       
   

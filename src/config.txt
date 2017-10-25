@@ -1,2 +1,2 @@
 Server=LOCALHOST\SQLSERVER2012;Database=GD2C2017;User Id=gd;Password=gd2017;
-2016/01/01
+2016/11/12

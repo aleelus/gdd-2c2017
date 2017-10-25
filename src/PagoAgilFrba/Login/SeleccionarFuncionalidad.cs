@@ -99,7 +99,7 @@ namespace PagoAgilFrba.Login
                     nuevoForm = new Devoluciones.Devoluciones();
                     break;
                 case "Listado Estadistico":
-                    nuevoForm = new ListadoEstadistico.Form1();
+                    nuevoForm = new ListadoEstadistico.SeleccionarListado();
                     break;
             }
 
