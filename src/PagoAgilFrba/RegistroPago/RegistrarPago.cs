@@ -170,6 +170,11 @@ namespace PagoAgilFrba.RegistroPago
                 errorProvider1.SetError(comboBoxFormaPago, "Elija una forma de pago");
                 correcto = false;
             }
+            if (dateTimePickerVto.Value < Sesion.fechaActual)
+            {
+                errorProvider1.SetError(dateTimePickerVto, "La factura ya ha vencido");
+                correcto = false;
+            }
 
 
             return correcto;
@@ -222,7 +227,7 @@ namespace PagoAgilFrba.RegistroPago
                 SQLParametros parametros = new SQLParametros();
                 
                 string listaNuevoPago = "";
-                this.dataGridViewListaFacturas.Sort(this.dataGridViewListaFacturas.Columns["Empresa"], ListSortDirection.Ascending);
+                this.dataGridViewListaFacturas.Sort(this.dataGridViewListaFacturas.Columns["ClienteId"], ListSortDirection.Ascending);
 
                 foreach (DataGridViewRow fila in dataGridViewListaFacturas.Rows)
                 {

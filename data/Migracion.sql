@@ -66,6 +66,8 @@ IF OBJECT_ID('[GRUPO6].FormaPago') IS NOT NULL
 --------------------------------------------------------------
 IF OBJECT_ID('[GRUPO6].obtenerCantFacturasXEmpresa') IS NOT NULL
 	DROP FUNCTION [GRUPO6].obtenerCantFacturasXEmpresa
+IF OBJECT_ID('[GRUPO6].IsZero') IS NOT NULL
+	DROP FUNCTION [GRUPO6].IsZero
 
 --------------------------------------------------------------
 				--DELETE STORE PROCEDURE
@@ -163,6 +165,10 @@ IF OBJECT_ID('[GRUPO6].generarListado0') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].generarListado0
 IF OBJECT_ID('[GRUPO6].generarListado1') IS NOT NULL
 	DROP PROCEDURE [GRUPO6].generarListado1
+IF OBJECT_ID('[GRUPO6].generarListado2') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].generarListado2
+IF OBJECT_ID('[GRUPO6].generarListado3') IS NOT NULL
+	DROP PROCEDURE [GRUPO6].generarListado3
 		
 --------------------------------------------------------------
 				--Drop Schema
@@ -377,6 +383,21 @@ AS
 
 		RETURN @cant
 	END
+GO
+
+CREATE FUNCTION [GRUPO6].IsZero(@Number FLOAT,@IsZeroNumber FLOAT)
+RETURNS FLOAT
+AS
+BEGIN
+
+	IF (@Number = 0)
+	BEGIN
+		SET @Number = @IsZeroNumber
+	END
+
+	RETURN (@Number)
+
+END
 GO
 
 --------------------------------------------------------------
@@ -1579,14 +1600,7 @@ AS
 		DECLARE @error nvarchar(max)
 		DECLARE @total numeric(18,0)= (SELECT COUNT(*) FROM GRUPO6.Factura fac 
 		JOIN GRUPO6.RegistroPago reg ON (fac.idRegistroPago= reg.idRegistroPago AND YEAR(reg.fechaCobroRegistroPago) = @anio AND MONTH(reg.fechaCobroRegistroPago) BETWEEN @primerMes AND @ultimoMes)
-		WHERE fac.idRegistroPago IS NOT NULL)
-
-		IF @total = 0
-			BEGIN				
-				SET @error = 'total es igual a 0'
-				RAISERROR(@error,16,1)												
-				RETURN								
-			END		
+		WHERE fac.idRegistroPago IS NOT NULL)			
 
 		-- NO ME ANDA CON LA IMPLEMENTACION DE LA FUNCION
 		--SELECT DISTINCT emp.nombreEmpresa as 'Nombre de la Empresa',
@@ -1598,7 +1612,7 @@ AS
 		SELECT DISTINCT TOP 5 emp.nombreEmpresa as 'Nombre de la Empresa',
 				(CONVERT(numeric(18,2),((SELECT COUNT(*) FROM GRUPO6.Factura f 
 					JOIN GRUPO6.RegistroPago r ON (f.idEmpresa= emp.idEmpresa AND f.idRegistroPago= r.idRegistroPago AND YEAR(r.fechaCobroRegistroPago) = @anio AND MONTH(r.fechaCobroRegistroPago) BETWEEN @primerMes AND @ultimoMes)
-					WHERE f.idRegistroPago IS NOT NULL)/@total)*100)) as 'Porcentaje'
+					WHERE f.idRegistroPago IS NOT NULL)/GRUPO6.IsZero(@total,1))*100)) as 'Porcentaje'
 				FROM GRUPO6.Factura fac 
 				JOIN GRUPO6.Empresa emp ON emp.idEmpresa = fac.idEmpresa
 				WHERE fac.idRegistroPago IS NOT NULL ORDER BY Porcentaje DESC
@@ -1618,6 +1632,46 @@ AS
 		SELECT TOP 5 emp.nombreEmpresa, 
 		(SELECT SUM(r.importeTotalRendicion) FROM GRUPO6.Rendicion r WHERE r.idEmpresa=emp.idEmpresa AND YEAR(r.fechaRendicion) = @anio AND MONTH(r.fechaRendicion) BETWEEN @primerMes AND @ultimoMes) as 'Total Rendicion' 
 		FROM GRUPO6.Empresa emp ORDER BY [Total Rendicion] DESC
+
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].generarListado2
+@anio numeric(18,0),
+@primerMes numeric(18,0),
+@ultimoMes numeric(18,0)
+AS
+	BEGIN
+		
+		SELECT TOP 5 cli.dniCliente as 'Dni', cli.nombreCliente as 'Nombre',cli.apellidoCliente as 'Apellido', COUNT(*) as 'Cantidad de pagos' FROM GRUPO6.RegistroPago r	
+				JOIN GRUPO6.Cliente cli ON cli.idCliente = r.idCliente 
+				WHERE  YEAR(r.fechaCobroRegistroPago) = @anio AND MONTH(r.fechaCobroRegistroPago) BETWEEN @primerMes AND @ultimoMes
+				GROUP BY r.idCliente,cli.dniCliente,cli.nombreCliente,cli.apellidoCliente ORDER BY [Cantidad de pagos] DESC
+
+	END
+GO
+
+CREATE PROCEDURE [GRUPO6].generarListado3
+@anio numeric(18,0),
+@primerMes numeric(18,0),
+@ultimoMes numeric(18,0)
+AS
+	BEGIN
+		
+		SELECT TOP 5 cli.dniCliente as 'Dni' ,cli.nombreCliente as 'Nombre', cli.apellidoCliente as 'Apellido',
+			(CONVERT(numeric(18,2), ( 
+				(SELECT COUNT(*) FROM GRUPO6.Factura f 
+					WHERE (f.idCliente = cli.idCliente AND
+					f.idRegistroPago IS NOT NULL AND
+					((YEAR(f.fechaVencimientoFactura) = @anio AND MONTH(f.fechaVencimientoFactura) BETWEEN @primerMes AND @ultimoMes) OR
+					(YEAR(f.fechaAltaFactura) = @anio AND MONTH(f.fechaAltaFactura) BETWEEN @primerMes AND @ultimoMes) ))) / 
+				GRUPO6.IsZero((SELECT CONVERT(decimal,COUNT(*)) FROM GRUPO6.Factura f1 
+					WHERE (f1.idCliente = cli.idCliente AND 
+					((YEAR(f1.fechaVencimientoFactura) = @anio AND MONTH(f1.fechaVencimientoFactura) BETWEEN @primerMes AND @ultimoMes) OR
+					 (YEAR(f1.fechaAltaFactura) = @anio AND MONTH(f1.fechaAltaFactura) BETWEEN @primerMes AND @ultimoMes) ))),1) )*100)) as 'Porcentaje'
+			FROM GRUPO6.Cliente cli 		
+			ORDER BY Porcentaje DESC
+		
 
 	END
 GO
