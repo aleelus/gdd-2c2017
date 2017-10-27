@@ -88,6 +88,8 @@
             // 
             // dataGridViewItems
             // 
+            this.dataGridViewItems.AllowUserToResizeColumns = false;
+            this.dataGridViewItems.AllowUserToResizeRows = false;
             this.dataGridViewItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewItems.Location = new System.Drawing.Point(386, 25);
             this.dataGridViewItems.Name = "dataGridViewItems";

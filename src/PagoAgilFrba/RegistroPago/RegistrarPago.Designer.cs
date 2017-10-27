@@ -52,8 +52,6 @@
             this.buttonRegistrarPago = new System.Windows.Forms.Button();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.dataGridViewListaFacturas = new System.Windows.Forms.DataGridView();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.buttonLimpiar = new System.Windows.Forms.Button();
             this.EmpresaId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ClienteId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Datos = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -62,6 +60,8 @@
             this.Importe = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FormaPago = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.FechaVto = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.buttonLimpiar = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewListaFacturas)).BeginInit();
@@ -299,6 +299,8 @@
             // 
             this.dataGridViewListaFacturas.AllowUserToAddRows = false;
             this.dataGridViewListaFacturas.AllowUserToDeleteRows = false;
+            this.dataGridViewListaFacturas.AllowUserToResizeColumns = false;
+            this.dataGridViewListaFacturas.AllowUserToResizeRows = false;
             this.dataGridViewListaFacturas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewListaFacturas.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.EmpresaId,
@@ -309,34 +311,14 @@
             this.Importe,
             this.FormaPago,
             this.FechaVto});
+            this.dataGridViewListaFacturas.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridViewListaFacturas.Location = new System.Drawing.Point(17, 19);
             this.dataGridViewListaFacturas.Name = "dataGridViewListaFacturas";
             this.dataGridViewListaFacturas.ReadOnly = true;
+            this.dataGridViewListaFacturas.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridViewListaFacturas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewListaFacturas.Size = new System.Drawing.Size(781, 126);
             this.dataGridViewListaFacturas.TabIndex = 34;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.buttonLimpiar);
-            this.groupBox2.Controls.Add(this.dataGridViewListaFacturas);
-            this.groupBox2.Location = new System.Drawing.Point(12, 164);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(813, 183);
-            this.groupBox2.TabIndex = 35;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Lista de Facturas a Pagar";
-            // 
-            // buttonLimpiar
-            // 
-            this.buttonLimpiar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonLimpiar.Location = new System.Drawing.Point(368, 148);
-            this.buttonLimpiar.Name = "buttonLimpiar";
-            this.buttonLimpiar.Size = new System.Drawing.Size(97, 29);
-            this.buttonLimpiar.TabIndex = 51;
-            this.buttonLimpiar.Text = "Limpiar";
-            this.buttonLimpiar.UseVisualStyleBackColor = true;
-            this.buttonLimpiar.Click += new System.EventHandler(this.buttonLimpiar_Click);
             // 
             // EmpresaId
             // 
@@ -385,6 +367,28 @@
             this.FechaVto.HeaderText = "Fecha Vto";
             this.FechaVto.Name = "FechaVto";
             this.FechaVto.ReadOnly = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.buttonLimpiar);
+            this.groupBox2.Controls.Add(this.dataGridViewListaFacturas);
+            this.groupBox2.Location = new System.Drawing.Point(12, 164);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(813, 183);
+            this.groupBox2.TabIndex = 35;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Lista de Facturas a Pagar";
+            // 
+            // buttonLimpiar
+            // 
+            this.buttonLimpiar.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonLimpiar.Location = new System.Drawing.Point(368, 148);
+            this.buttonLimpiar.Name = "buttonLimpiar";
+            this.buttonLimpiar.Size = new System.Drawing.Size(97, 29);
+            this.buttonLimpiar.TabIndex = 51;
+            this.buttonLimpiar.Text = "Limpiar";
+            this.buttonLimpiar.UseVisualStyleBackColor = true;
+            this.buttonLimpiar.Click += new System.EventHandler(this.buttonLimpiar_Click);
             // 
             // RegistrarPago
             // 

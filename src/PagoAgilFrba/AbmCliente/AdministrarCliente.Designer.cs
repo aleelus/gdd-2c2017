@@ -118,10 +118,18 @@
             // 
             // dataGridViewBuscarCliente
             // 
+            this.dataGridViewBuscarCliente.AllowUserToAddRows = false;
+            this.dataGridViewBuscarCliente.AllowUserToDeleteRows = false;
+            this.dataGridViewBuscarCliente.AllowUserToResizeColumns = false;
+            this.dataGridViewBuscarCliente.AllowUserToResizeRows = false;
             this.dataGridViewBuscarCliente.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewBuscarCliente.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewBuscarCliente.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridViewBuscarCliente.Location = new System.Drawing.Point(12, 84);
+            this.dataGridViewBuscarCliente.MultiSelect = false;
             this.dataGridViewBuscarCliente.Name = "dataGridViewBuscarCliente";
+            this.dataGridViewBuscarCliente.ReadOnly = true;
+            this.dataGridViewBuscarCliente.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridViewBuscarCliente.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewBuscarCliente.Size = new System.Drawing.Size(1028, 274);
             this.dataGridViewBuscarCliente.TabIndex = 2;

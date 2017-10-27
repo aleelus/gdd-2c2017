@@ -78,10 +78,18 @@
             // 
             // dataGridViewBuscarSucursal
             // 
+            this.dataGridViewBuscarSucursal.AllowUserToAddRows = false;
+            this.dataGridViewBuscarSucursal.AllowUserToDeleteRows = false;
+            this.dataGridViewBuscarSucursal.AllowUserToResizeColumns = false;
+            this.dataGridViewBuscarSucursal.AllowUserToResizeRows = false;
             this.dataGridViewBuscarSucursal.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewBuscarSucursal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewBuscarSucursal.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridViewBuscarSucursal.Location = new System.Drawing.Point(12, 84);
+            this.dataGridViewBuscarSucursal.MultiSelect = false;
             this.dataGridViewBuscarSucursal.Name = "dataGridViewBuscarSucursal";
+            this.dataGridViewBuscarSucursal.ReadOnly = true;
+            this.dataGridViewBuscarSucursal.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridViewBuscarSucursal.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewBuscarSucursal.Size = new System.Drawing.Size(1028, 274);
             this.dataGridViewBuscarSucursal.TabIndex = 11;

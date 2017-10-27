@@ -46,10 +46,10 @@
             this.labelEmpresa = new System.Windows.Forms.Label();
             this.labelFechaDeRendicion = new System.Windows.Forms.Label();
             this.labelFechaRendicion = new System.Windows.Forms.Label();
-            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBoxListaRendiciones.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewListaRendiciones)).BeginInit();
             this.groupBoxDetalleRendicion.SuspendLayout();
@@ -81,6 +81,7 @@
             this.dataGridViewListaRendiciones.Location = new System.Drawing.Point(10, 24);
             this.dataGridViewListaRendiciones.MultiSelect = false;
             this.dataGridViewListaRendiciones.Name = "dataGridViewListaRendiciones";
+            this.dataGridViewListaRendiciones.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridViewListaRendiciones.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewListaRendiciones.Size = new System.Drawing.Size(232, 428);
             this.dataGridViewListaRendiciones.TabIndex = 0;
@@ -187,8 +188,11 @@
             // 
             // dataGridViewListaFacturas
             // 
+            this.dataGridViewListaFacturas.AllowUserToResizeColumns = false;
+            this.dataGridViewListaFacturas.AllowUserToResizeRows = false;
             this.dataGridViewListaFacturas.BackgroundColor = System.Drawing.Color.Gainsboro;
             this.dataGridViewListaFacturas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dataGridViewListaFacturas.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridViewListaFacturas.Location = new System.Drawing.Point(16, 58);
             this.dataGridViewListaFacturas.MultiSelect = false;
             this.dataGridViewListaFacturas.Name = "dataGridViewListaFacturas";
@@ -256,10 +260,6 @@
             this.labelFechaRendicion.TabIndex = 1;
             this.labelFechaRendicion.Text = "Fecha de rendición:";
             // 
-            // errorProvider1
-            // 
-            this.errorProvider1.ContainerControl = this;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -289,6 +289,10 @@
             this.label3.Size = new System.Drawing.Size(19, 15);
             this.label3.TabIndex = 16;
             this.label3.Text = "%";
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
             // 
             // Rendicion
             // 

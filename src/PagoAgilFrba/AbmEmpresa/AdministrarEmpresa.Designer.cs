@@ -78,10 +78,18 @@
             // 
             // dataGridViewBuscarEmpresa
             // 
+            this.dataGridViewBuscarEmpresa.AllowUserToAddRows = false;
+            this.dataGridViewBuscarEmpresa.AllowUserToDeleteRows = false;
+            this.dataGridViewBuscarEmpresa.AllowUserToResizeColumns = false;
+            this.dataGridViewBuscarEmpresa.AllowUserToResizeRows = false;
             this.dataGridViewBuscarEmpresa.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewBuscarEmpresa.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewBuscarEmpresa.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridViewBuscarEmpresa.Location = new System.Drawing.Point(12, 84);
+            this.dataGridViewBuscarEmpresa.MultiSelect = false;
             this.dataGridViewBuscarEmpresa.Name = "dataGridViewBuscarEmpresa";
+            this.dataGridViewBuscarEmpresa.ReadOnly = true;
+            this.dataGridViewBuscarEmpresa.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridViewBuscarEmpresa.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewBuscarEmpresa.Size = new System.Drawing.Size(1028, 274);
             this.dataGridViewBuscarEmpresa.TabIndex = 11;

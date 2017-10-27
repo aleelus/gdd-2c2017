@@ -79,10 +79,18 @@
             // 
             // dataGridViewBuscarFactura
             // 
+            this.dataGridViewBuscarFactura.AllowUserToAddRows = false;
+            this.dataGridViewBuscarFactura.AllowUserToDeleteRows = false;
+            this.dataGridViewBuscarFactura.AllowUserToResizeColumns = false;
+            this.dataGridViewBuscarFactura.AllowUserToResizeRows = false;
             this.dataGridViewBuscarFactura.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewBuscarFactura.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewBuscarFactura.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridViewBuscarFactura.Location = new System.Drawing.Point(12, 81);
+            this.dataGridViewBuscarFactura.MultiSelect = false;
             this.dataGridViewBuscarFactura.Name = "dataGridViewBuscarFactura";
+            this.dataGridViewBuscarFactura.ReadOnly = true;
+            this.dataGridViewBuscarFactura.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dataGridViewBuscarFactura.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridViewBuscarFactura.Size = new System.Drawing.Size(1028, 274);
             this.dataGridViewBuscarFactura.TabIndex = 11;

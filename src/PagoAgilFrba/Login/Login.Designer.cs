@@ -93,7 +93,7 @@
             this.groupBox1.Controls.Add(this.textBoxUsuario);
             this.groupBox1.Controls.Add(this.labelUsuario);
             this.groupBox1.Controls.Add(this.labelContrasena);
-            this.groupBox1.Location = new System.Drawing.Point(8, 157);
+            this.groupBox1.Location = new System.Drawing.Point(8, 132);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(265, 140);
             this.groupBox1.TabIndex = 5;
@@ -103,9 +103,9 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(69, 12);
+            this.pictureBox1.Location = new System.Drawing.Point(90, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(143, 145);
+            this.pictureBox1.Size = new System.Drawing.Size(109, 122);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
@@ -115,7 +115,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.CadetBlue;
-            this.ClientSize = new System.Drawing.Size(284, 305);
+            this.ClientSize = new System.Drawing.Size(284, 285);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;

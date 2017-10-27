@@ -1014,7 +1014,7 @@ AS
 					FROM [GRUPO6].Factura fac
 					JOIN GRUPO6.Cliente cli ON cli.idCliente = fac.idCliente  			
 					WHERE cli.dniCliente like '%'+@dni+'%' AND
-					fac.numeroFactura like '%'+@nroFactura+'%'					
+					fac.numeroFactura like '%'+@nroFactura+'%' AND fac.idRegistroPago IS NULL AND fac.idRendicion IS NULL				
 			END
 		ELSE
 			BEGIN
@@ -1023,7 +1023,7 @@ AS
 						JOIN GRUPO6.Cliente cli ON cli.idCliente = fac.idCliente  			
 						WHERE cli.dniCliente like '%'+@dni+'%' AND
 						fac.numeroFactura like '%'+@nroFactura+'%' AND
-						fac.idEmpresa = CONVERT(numeric(18,0),@id_empresa)	
+						fac.idEmpresa = CONVERT(numeric(18,0),@id_empresa) AND fac.idRegistroPago IS NULL AND fac.idRendicion IS NULL
 			END
 
 			
