@@ -40,7 +40,7 @@ namespace PagoAgilFrba.BaseDeDatos.ConexionDB
         {
             try
             {
-                SqlCommand comandoSQL = new SqlCommand("[GRUPO6]." + nombreProcedure, Sesion.conexion);
+                SqlCommand comandoSQL = new SqlCommand("[GRUPO48]." + nombreProcedure, Sesion.conexion);
                 comandoSQL.CommandType = CommandType.StoredProcedure;
 
                 if (parametros != null && parametros.Exists(x => x != null))
@@ -80,7 +80,7 @@ namespace PagoAgilFrba.BaseDeDatos.ConexionDB
         {
             try
             {
-                SqlCommand comandoSQL = new SqlCommand("[GRUPO6]." + nombreProcedure, Sesion.conexion);
+                SqlCommand comandoSQL = new SqlCommand("[GRUPO48]." + nombreProcedure, Sesion.conexion);
                 comandoSQL.CommandType = CommandType.StoredProcedure;
 
                 if (parametros != null && parametros.Exists(x => x != null))

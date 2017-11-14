@@ -207,7 +207,9 @@ namespace PagoAgilFrba.AbmRol
 
         private void buttonVolver_Click(object sender, EventArgs e)
         {
-
+            salir = false;
+            Owner.Show();
+            this.Close();
         }
    
     }

@@ -41,7 +41,7 @@ namespace PagoAgilFrba.Login
         {
 
 
-           if (comboBoxRoles.Items.Count == 1)
+           if (comboBoxRoles.Items.Count == 1) // Si solo tiene un rol, entra directamente
             {
                 Sesion.rol_nombre = ((DataRowView)(comboBoxRoles.SelectedItem)).Row.ItemArray[1].ToString();
                 Sesion.rol_id = Convert.ToInt32(comboBoxRoles.SelectedValue);

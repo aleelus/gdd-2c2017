@@ -16,6 +16,7 @@ namespace PagoAgilFrba.RegistroPago
 
         private decimal idEmpresa;
         private decimal idCliente;
+        public bool salir = true;
 
         public RegistrarPago()
         {
@@ -246,17 +247,17 @@ namespace PagoAgilFrba.RegistroPago
                 if (ConexionDB.Procedure("nuevoPago", parametros.get())) {
                     MessageBox.Show("Se registro el pago de la/s factura/s");                
                 }
-
-
-               /* if (contador == 1)
-                {
-                    MessageBox.Show("La factura " + comboBoxNroFactura.Text + " se ha pagado");
-                }
-                else if (contador >1){
-                    MessageBox.Show("Las " + contador.ToString() + " se han pagado");
-                }*/
-                      
+                
+           
             }
+
+        }
+
+        private void buttonCancelar_Click(object sender, EventArgs e)
+        {
+            salir = false;
+            Owner.Show();
+            this.Close();
 
         }
     }

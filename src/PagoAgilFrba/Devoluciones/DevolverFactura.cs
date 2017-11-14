@@ -126,5 +126,12 @@ namespace PagoAgilFrba.Devoluciones
                 MessageBox.Show("Debe seleccionar una fila antes y escribir un motivo de devolución");
         }
 
+        private void buttonVolver_Click(object sender, EventArgs e)
+        {
+            salir = false;
+            Owner.Show();
+            this.Close();
+        }
+
     }
 }

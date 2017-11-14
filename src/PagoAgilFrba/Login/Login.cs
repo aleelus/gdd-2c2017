@@ -24,6 +24,7 @@ namespace PagoAgilFrba.Login
 
             SQLParametros parametros = new SQLParametros();
             parametros.add("@usu", textBoxUsuario.Text);
+            //Encripto la contraseña
             parametros.add("@password", Cifrado.Cifrar(textBoxContrasena.Text));
 
             DataTable DTUsuario;

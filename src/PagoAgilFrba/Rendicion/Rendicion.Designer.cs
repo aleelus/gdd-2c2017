@@ -50,6 +50,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.buttonVolver = new System.Windows.Forms.Button();
             this.groupBoxListaRendiciones.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewListaRendiciones)).BeginInit();
             this.groupBoxDetalleRendicion.SuspendLayout();
@@ -89,6 +90,7 @@
             // 
             // groupBoxDetalleRendicion
             // 
+            this.groupBoxDetalleRendicion.Controls.Add(this.buttonVolver);
             this.groupBoxDetalleRendicion.Controls.Add(this.buttonEfectuarRendicion);
             this.groupBoxDetalleRendicion.Controls.Add(this.labelImpTotal);
             this.groupBoxDetalleRendicion.Controls.Add(this.labelImporteTotal);
@@ -118,7 +120,7 @@
             // 
             this.buttonEfectuarRendicion.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.buttonEfectuarRendicion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonEfectuarRendicion.Location = new System.Drawing.Point(293, 405);
+            this.buttonEfectuarRendicion.Location = new System.Drawing.Point(205, 400);
             this.buttonEfectuarRendicion.Name = "buttonEfectuarRendicion";
             this.buttonEfectuarRendicion.Size = new System.Drawing.Size(144, 52);
             this.buttonEfectuarRendicion.TabIndex = 13;
@@ -294,6 +296,18 @@
             // 
             this.errorProvider1.ContainerControl = this;
             // 
+            // buttonVolver
+            // 
+            this.buttonVolver.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonVolver.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonVolver.Location = new System.Drawing.Point(381, 400);
+            this.buttonVolver.Name = "buttonVolver";
+            this.buttonVolver.Size = new System.Drawing.Size(144, 52);
+            this.buttonVolver.TabIndex = 21;
+            this.buttonVolver.Text = "Volver";
+            this.buttonVolver.UseVisualStyleBackColor = true;
+            this.buttonVolver.Click += new System.EventHandler(this.buttonVolver_Click);
+            // 
             // Rendicion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -339,5 +353,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button buttonVolver;
     }
 }

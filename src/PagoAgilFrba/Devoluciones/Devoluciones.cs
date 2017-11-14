@@ -12,6 +12,9 @@ namespace PagoAgilFrba.Devoluciones
 {
     public partial class Devoluciones : Form
     {
+
+        public bool salir = true;
+
         public Devoluciones()
         {
             InitializeComponent();
@@ -45,6 +48,13 @@ namespace PagoAgilFrba.Devoluciones
             nuevoForm.Show(this);
             this.Hide();
 
+        }
+
+        private void buttonVolver_Click(object sender, EventArgs e)
+        {
+            salir = false;
+            Owner.Show();
+            this.Close();
         }
                 
     }

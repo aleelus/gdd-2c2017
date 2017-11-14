@@ -15,6 +15,7 @@ namespace PagoAgilFrba.Rendicion
     {
 
         public decimal idEmpresa;
+        public bool salir = true;
 
         public Rendicion()
         {
@@ -162,6 +163,13 @@ namespace PagoAgilFrba.Rendicion
             labelImpTotal.Text = "";    
             
 
+        }
+
+        private void buttonVolver_Click(object sender, EventArgs e)
+        {
+            salir = false;
+            Owner.Show();
+            this.Close();
         }
 
               

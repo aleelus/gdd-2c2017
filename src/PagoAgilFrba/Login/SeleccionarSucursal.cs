@@ -38,7 +38,7 @@ namespace PagoAgilFrba.Login
         private void SeleccionarSucursal_Shown(Object sender, EventArgs e)
         {
 
-             if (comboBoxSucursales.Items.Count == 1)
+            if (comboBoxSucursales.Items.Count == 1) // Si solo tiene una sucursal, entra directamente
              {
                  Sesion.sucursal_nombre = ((DataRowView)(comboBoxSucursales.SelectedItem)).Row.ItemArray[1].ToString();
                  Sesion.sucursal_id = Convert.ToInt32(comboBoxSucursales.SelectedValue);

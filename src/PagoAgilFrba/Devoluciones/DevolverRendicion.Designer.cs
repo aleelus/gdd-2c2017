@@ -57,6 +57,7 @@
             this.buttonVolver.TabIndex = 20;
             this.buttonVolver.Text = "Volver";
             this.buttonVolver.UseVisualStyleBackColor = true;
+            this.buttonVolver.Click += new System.EventHandler(this.buttonVolver_Click);
             // 
             // buttonEfectuarDevolucion
             // 
